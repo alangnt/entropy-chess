@@ -1,9 +1,9 @@
-type ChessPiece = "king" | "queen" | "rook" | "knight" | "bishop" | "pawn";
+export type PieceType = "king" | "queen" | "rook" | "knight" | "bishop" | "pawn";
 type Side = "black" | "white";
-type RawPiece = { name: string; type: ChessPiece };
+type RawPiece = { name: string; type: PieceType };
 export type Piece = RawPiece & { initialPlace: string; currentPlace: string; side: Side };
 
-const initialBlackPlaces = ["d8", "e8", "a8", "h8", "b8", "g8", "c8", "f8", "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"];
+const initialBlackPlaces = [["d", "8"], ["e", "8"], ["a", "8"], "h8", "b8", "g8", "c8", "f8", "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"];
 const initialWhitePlaces = ["d1", "e1", "a1", "h1", "b1", "g1", "c1", "f1", "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"];
 const pieces: RawPiece[] = [
   { name: "King", type: "king" },
