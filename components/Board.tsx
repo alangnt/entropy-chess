@@ -10,15 +10,39 @@ export default function BoardComponent() {
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>();
   const [allowedMoves, setAllowedMoves] = useState<Position[]>([]);
 
-  const boardPieces: Piece[] = [...blackPieces, ...whitePieces];
+  const [boardPieces, setBoardPieces] = useState<Piece[]>([...blackPieces, ...whitePieces]);
 
-  const selectPiece = (piece: Piece | null): void => {
-    if (!piece) return;
-    if (piece.side === "black") return;
-
+  const selectPiece = (piece: Piece): void => {
     if (selectedPiece === piece) return setSelectedPiece(null);
-
     setSelectedPiece(piece);
+  }
+
+  const movePiece = (tile: Position): void => {
+    if (!selectedPiece) return;
+
+    const currentPlace = toKey(selectedPiece.currentPlace);
+
+    const updatedPiece = {
+      ...selectedPiece,
+      currentPlace: tile
+    };
+    
+    const updatedBoardPieces = boardPieces.map((piece) => toKey(piece.currentPlace) === currentPlace ? updatedPiece : piece);
+
+    setBoardPieces(updatedBoardPieces);
+    return setSelectedPiece(null);
+  }
+
+  const onTileClick = (piece: Piece | null, tile: Position): void => {
+    if (!selectedPiece && !piece) return;
+    if (!selectedPiece && piece && piece.side === "black") return;
+
+    const allowedKeys = new Set(allowedMoves.map(toKey));
+    console.log("Is allowed move: ", allowedKeys.has(toKey(tile)));
+
+    if (selectedPiece && allowedKeys.has(toKey(tile))) return movePiece(tile);
+
+    if (piece) return selectPiece(piece);
   }
 
   const calculateAllowedMoves = (piece: Piece): Position[] => {
@@ -78,7 +102,7 @@ export default function BoardComponent() {
         return (
           <div
             key={index}
-            onClick={() => selectPiece(piece)}
+            onClick={() => onTileClick(piece, rawTile)}
             className={`
               flex items-center justify-center w-24 h-24 border border-foreground col-span-1 row-span-1
               ${isBlackTile && !isAllowedMove ? "bg-foreground text-background" : ""}
