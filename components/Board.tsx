@@ -43,31 +43,20 @@ export default function BoardComponent() {
     <div className={"grid grid-cols-8 w-fit"}>
       {board.map((tile, index) => {
         const isBlackTile = (tile.x.value % 2 === 0 && tile.y.value % 2 === 0) || (tile.x.value % 2 !== 0 && tile.y.value % 2 !== 0);
-        const tileName = tile.x.name + tile.y.value;
+        const piece = boardPieces.find(piece => piece.currentPlace.x.value === tile.x.value && piece.currentPlace.y.value === tile.y.value) ?? null;
+        const isSelected = piece && selectedPiece === piece;
+        
         return (
           <div
             key={index}
+            onClick={() => selectPiece(piece)}
             className={`
               flex items-center justify-center w-24 h-24 border border-foreground col-span-1 row-span-1
               ${isBlackTile ? "bg-foreground text-background" : ""}
+              ${isSelected ? 'border-red-500 shadow shadow-red-500' : ''}
             `}
           >
-            <p>{tileName}</p>
-            {/*
-            {row.x.map((column, columnIndex) => {
-              const isWhiteBox = (columnIndex % 2 === 0 && rowIndex % 2 === 0) || (columnIndex % 2 !== 0 && rowIndex % 2 !== 0);
-              const pieceIndex = column + row[0];
-              const piece = boardPieces.find(piece => piece.currentPlace === pieceIndex) ?? null;
-              const isSelected = piece && selectedPiece === piece;
-              return (
-                <p key={columnIndex + rowIndex} onClick={() => selectPiece(piece)} className={`
-                  w-24 h-24 flex items-center justify-center border
-                  ${isWhiteBox ? '' : 'bg-foreground text-background border-foreground'}
-                  ${isSelected ? 'border-red-500 shadow shadow-red-500' : ''}
-                `}>{piece?.name}</p>
-              )
-            })}
-            */}
+            <p>{piece?.name}</p>
           </div>
         )
       })}
