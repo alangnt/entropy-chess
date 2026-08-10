@@ -42,7 +42,8 @@ export default function BoardComponent() {
   return (
     <div className={"grid grid-cols-8 w-fit"}>
       {board.map((tile, index) => {
-        const isBlackTile = (tile.x.value % 2 === 0 && tile.y.value % 2 === 0) || (tile.x.value % 2 !== 0 && tile.y.value % 2 !== 0)
+        const isBlackTile = (tile.x.value % 2 === 0 && tile.y.value % 2 === 0) || (tile.x.value % 2 !== 0 && tile.y.value % 2 !== 0);
+        const tileName = tile.x.name + tile.y.value;
         return (
           <div
             key={index}
@@ -51,7 +52,7 @@ export default function BoardComponent() {
               ${isBlackTile ? "bg-foreground text-background" : ""}
             `}
           >
-            <p>{tile.x.name + tile.y.value}</p>
+            <p>{tileName}</p>
             {/*
             {row.x.map((column, columnIndex) => {
               const isWhiteBox = (columnIndex % 2 === 0 && rowIndex % 2 === 0) || (columnIndex % 2 !== 0 && rowIndex % 2 !== 0);
