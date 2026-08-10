@@ -1,6 +1,6 @@
 type PositionX = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h";
 type PositionY = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8";
-type Position = {
+export type Position = {
   x: { name: PositionX; value: number };
   y: { name: PositionY; value: number };
 };

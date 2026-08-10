@@ -1,10 +1,47 @@
+import { Position } from "./Board";
+
 export type PieceType = "king" | "queen" | "rook" | "knight" | "bishop" | "pawn";
 type Side = "black" | "white";
 type RawPiece = { name: string; type: PieceType };
-export type Piece = RawPiece & { initialPlace: string; currentPlace: string; side: Side };
+export type Piece = RawPiece & { initialPlace: Position; currentPlace: Position; side: Side };
 
-const initialBlackPlaces = [["d", "8"], ["e", "8"], ["a", "8"], "h8", "b8", "g8", "c8", "f8", "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"];
-const initialWhitePlaces = ["d1", "e1", "a1", "h1", "b1", "g1", "c1", "f1", "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"];
+const initialBlackPlaces: Position[] = [
+  { x: { name: "d", value: 4 }, y: { name: "8", value: 8 } },
+  { x: { name: "e", value: 5 }, y: { name: "8", value: 8 } },
+  { x: { name: "a", value: 1 }, y: { name: "8", value: 8 } },
+  { x: { name: "h", value: 8 }, y: { name: "8", value: 8 } },
+  { x: { name: "b", value: 2 }, y: { name: "8", value: 8 } },
+  { x: { name: "g", value: 7 }, y: { name: "8", value: 8 } },
+  { x: { name: "c", value: 3 }, y: { name: "8", value: 8 } },
+  { x: { name: "f", value: 6 }, y: { name: "8", value: 8 } },
+  { x: { name: "a", value: 1 }, y: { name: "7", value: 7 } },
+  { x: { name: "b", value: 2 }, y: { name: "7", value: 7 } },
+  { x: { name: "c", value: 3 }, y: { name: "7", value: 7 } },
+  { x: { name: "d", value: 4 }, y: { name: "7", value: 7 } },
+  { x: { name: "e", value: 5 }, y: { name: "7", value: 7 } },
+  { x: { name: "f", value: 6 }, y: { name: "7", value: 7 } },
+  { x: { name: "g", value: 7 }, y: { name: "7", value: 7 } },
+  { x: { name: "h", value: 8 }, y: { name: "7", value: 7 } }
+];
+const initialWhitePlaces: Position[] = [
+  { x: { name: "d", value: 4 }, y: { name: "1", value: 1 } },
+  { x: { name: "e", value: 5 }, y: { name: "1", value: 1 } },
+  { x: { name: "a", value: 1 }, y: { name: "1", value: 1 } },
+  { x: { name: "h", value: 8 }, y: { name: "1", value: 1 } },
+  { x: { name: "b", value: 2 }, y: { name: "1", value: 1 } },
+  { x: { name: "g", value: 7 }, y: { name: "1", value: 1 } },
+  { x: { name: "c", value: 3 }, y: { name: "1", value: 1 } },
+  { x: { name: "f", value: 6 }, y: { name: "1", value: 1 } },
+  { x: { name: "a", value: 1 }, y: { name: "2", value: 2 } },
+  { x: { name: "b", value: 2 }, y: { name: "2", value: 2 } },
+  { x: { name: "c", value: 3 }, y: { name: "2", value: 2 } },
+  { x: { name: "d", value: 4 }, y: { name: "2", value: 2 } },
+  { x: { name: "e", value: 5 }, y: { name: "2", value: 2 } },
+  { x: { name: "f", value: 6 }, y: { name: "2", value: 2 } },
+  { x: { name: "g", value: 7 }, y: { name: "2", value: 2 } },
+  { x: { name: "h", value: 8 }, y: { name: "2", value: 2 } }
+]
+
 const pieces: RawPiece[] = [
   { name: "King", type: "king" },
   { name: "Queen", type: "queen" },
