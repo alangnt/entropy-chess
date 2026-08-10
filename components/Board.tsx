@@ -1,11 +1,11 @@
 "use client"
 
 import { Piece, PieceType, blackPieces, whitePieces } from "@/utils/Pieces";
-import { Board, initialBoard } from "@/utils/Board";
+import { initialBoard, Position } from "@/utils/Board";
 import { useState } from "react";
 
 export default function BoardComponent() {
-  const [board, setBoard] = useState<Board>(initialBoard);
+  // const [board, setBoard] = useState<Board>(initialBoard);
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>();
 
   const boardPieces: Piece[] = [...blackPieces, ...whitePieces];
@@ -41,11 +41,11 @@ export default function BoardComponent() {
 
   return (
     <div className={"grid grid-cols-8 w-fit"}>
-      {board.map((tile, index) => {
+      {initialBoard.map((tile: Position, index: number) => {
         const isBlackTile = (tile.x.value % 2 === 0 && tile.y.value % 2 === 0) || (tile.x.value % 2 !== 0 && tile.y.value % 2 !== 0);
         const piece = boardPieces.find(piece => piece.currentPlace.x.value === tile.x.value && piece.currentPlace.y.value === tile.y.value) ?? null;
         const isSelected = piece && selectedPiece === piece;
-        
+
         return (
           <div
             key={index}
