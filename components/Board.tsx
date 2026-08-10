@@ -6,7 +6,6 @@ import { toKey } from "@/utils/positionToKey";
 import { useEffect, useState } from "react";
 
 export default function BoardComponent() {
-  // const [board, setBoard] = useState<Board>(initialBoard);
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>();
   const [allowedMoves, setAllowedMoves] = useState<Position[]>([]);
 
