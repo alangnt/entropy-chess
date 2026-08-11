@@ -72,6 +72,86 @@ export const calculateAllowedMoves = (selectedTile: Tile, board: Board): Positio
         );
         break;
       case "bishop":
+        let positionX = selectedTile.position.x.value;
+        let positionY = selectedTile.position.y.value;
+
+        do { // top left
+          const position = { x: { value: positionX }, y: { value: positionY } };
+
+          const tile = board.find((tile) => toKey(tile.position) === toKey(position)) ?? null;
+          const isSelectedPiece = !!(tile && toKey(tile.position) === toKey(selectedTile.position));
+          
+          if (tile && tile.currentPiece && tile.currentPiece.side === side && !isSelectedPiece) break;
+          if (tile && tile.currentPiece && tile.currentPiece.side !== side && !isSelectedPiece) {
+            moves.push(position);
+            break;
+          }
+          
+          moves.push(position);
+
+          positionX -= 1;
+          positionY += 1;
+        } while (positionX >= 1 && positionY <= 8)
+        positionX = selectedTile.position.x.value;
+        positionY = selectedTile.position.y.value;
+
+        do { // top right
+          const position = { x: { value: positionX }, y: { value: positionY } };
+
+          const tile = board.find((tile) => toKey(tile.position) === toKey(position)) ?? null;
+          const isSelectedPiece = !!(tile && toKey(tile.position) === toKey(selectedTile.position));
+          
+          if (tile && tile.currentPiece && tile.currentPiece.side === side && !isSelectedPiece) break;
+          if (tile && tile.currentPiece && tile.currentPiece.side !== side && !isSelectedPiece) {
+            moves.push(position);
+            break;
+          }
+
+          moves.push(position);
+          positionX += 1;
+          positionY += 1;
+        } while (positionX <= 8 && positionY <= 8)
+        positionX = selectedTile.position.x.value;
+        positionY = selectedTile.position.y.value;
+
+        do { // bottom left
+          const position = { x: { value: positionX }, y: { value: positionY } };
+
+          const tile = board.find((tile) => toKey(tile.position) === toKey(position)) ?? null;
+          const isSelectedPiece = !!(tile && toKey(tile.position) === toKey(selectedTile.position));
+          
+          if (tile && tile.currentPiece && tile.currentPiece.side === side && !isSelectedPiece) break;
+          if (tile && tile.currentPiece && tile.currentPiece.side !== side && !isSelectedPiece) {
+            moves.push(position);
+            break;
+          }
+
+          moves.push(position);
+          positionX -= 1;
+          positionY -= 1;
+        } while (positionX >= 1 && positionY >= 1)
+        positionX = selectedTile.position.x.value;
+        positionY = selectedTile.position.y.value;
+
+        do { // bottom right
+          const position = { x: { value: positionX }, y: { value: positionY } };
+
+          const tile = board.find((tile) => toKey(tile.position) === toKey(position)) ?? null;
+          const isSelectedPiece = !!(tile && toKey(tile.position) === toKey(selectedTile.position));
+          
+          if (tile && tile.currentPiece && tile.currentPiece.side === side && !isSelectedPiece) break;
+          if (tile && tile.currentPiece && tile.currentPiece.side !== side && !isSelectedPiece) {
+            moves.push(position);
+            break;
+          }
+
+          moves.push(position);
+          positionX += 1;
+          positionY -= 1;
+        } while (positionX <= 8 && positionY >= 1)
+        positionX = selectedTile.position.x.value;
+        positionY = selectedTile.position.y.value;
+        
         break;
       case "pawn":
         moves.push({ 
