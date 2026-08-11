@@ -1,9 +1,8 @@
 "use client"
 
-import { PieceType } from "@/utils/Pieces";
 import { Board, initialBoard, Position, Tile } from "@/utils/Board";
+import { calculateAllowedMoves } from "@/utils/calculateAllowedMoves";
 import { toKey } from "@/utils/positionToKey";
-import { isSamePiece } from "@/utils/isSamePiece";
 import { useEffect, useState } from "react";
 
 export default function BoardComponent() {
@@ -52,43 +51,6 @@ export default function BoardComponent() {
     if (selectedTile && allowedKeys.has(toKey(position))) return movePiece(tile);
 
     if (piece) return selectTile(tile);
-  }
-
-  const calculateAllowedMoves = (tile: Tile): Position[] => {
-    const position = tile.position;
-    const initialPiece = tile?.initialPiece ?? null;
-    const currentPiece = tile!.currentPiece!;
-    const type: PieceType = currentPiece.type;
-
-    let moves: Position[] = [];
-
-    switch (type) {
-      case "king":
-        break;
-      case "queen":
-        break;
-      case "rook":
-        break;
-      case "knight":
-        break;
-      case "bishop":
-        break;
-      case "pawn":
-        moves.push({ 
-          x: { value: position.x.value }, 
-          y: { value: position.y.value + 1 } 
-        });
-        if (initialPiece && isSamePiece(initialPiece, currentPiece)) {
-          moves.push({ 
-            x: { value: position.x.value }, 
-            y: { value: position.y.value + 2 } 
-          });
-        }
-      default:
-        break;
-    }
-
-    return moves;
   }
 
   useEffect(() => {
