@@ -48,14 +48,14 @@ export default function BoardComponent() {
     const allowedKeys = new Set(allowedMoves.map(toKey));
     console.log("Is allowed move: ", allowedKeys.has(toKey(position)));
 
-    if (selectedTile && allowedKeys.has(toKey(position))) return movePiece(tile);
+    if (selectedTile && allowedKeys.has(toKey(position)) && !tile.currentPiece) return movePiece(tile);
 
     if (piece) return selectTile(tile);
   }
 
   useEffect(() => {
     if (!selectedTile) return setAllowedMoves([]);;
-    const calculatedAllowedMoves = calculateAllowedMoves(selectedTile);
+    const calculatedAllowedMoves = calculateAllowedMoves(selectedTile, board);
     setAllowedMoves(calculatedAllowedMoves);
   }, [selectedTile]);
 
