@@ -43,12 +43,13 @@ export default function BoardComponent() {
     const position = tile.position;
 
     if (!selectedTile && !piece) return;
-    if (!selectedTile && piece && piece.side === "black") return;
 
     const allowedKeys = new Set(allowedMoves.map(toKey));
     console.log("Is allowed move: ", allowedKeys.has(toKey(position)));
 
-    if (selectedTile && allowedKeys.has(toKey(position)) && !tile.currentPiece) return movePiece(tile);
+    const isUnallowedSide = selectedTile && selectedTile.currentPiece && tile.currentPiece ? selectedTile.currentPiece.side === tile.currentPiece.side : false;
+
+    if (selectedTile && allowedKeys.has(toKey(position)) && !isUnallowedSide) return movePiece(tile);
 
     if (piece) return selectTile(tile);
   }
