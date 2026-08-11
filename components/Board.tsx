@@ -94,7 +94,6 @@ export default function BoardComponent() {
   useEffect(() => {
     if (!selectedTile) return setAllowedMoves([]);;
     const calculatedAllowedMoves = calculateAllowedMoves(selectedTile);
-    console.log("Authorized moves: ", calculatedAllowedMoves);
     setAllowedMoves(calculatedAllowedMoves);
   }, [selectedTile]);
 
