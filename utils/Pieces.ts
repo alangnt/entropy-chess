@@ -1,46 +1,7 @@
-import { Position } from "./Board";
-
 export type PieceType = "king" | "queen" | "rook" | "knight" | "bishop" | "pawn";
-type Side = "black" | "white";
+export type Side = "black" | "white";
 type RawPiece = { name: string; type: PieceType };
-export type Piece = RawPiece & { initialPlace: Position; currentPlace: Position; side: Side };
-
-const initialBlackPlaces: Position[] = [
-  { x: { name: "d", value: 4 }, y: { name: "8", value: 8 } },
-  { x: { name: "e", value: 5 }, y: { name: "8", value: 8 } },
-  { x: { name: "a", value: 1 }, y: { name: "8", value: 8 } },
-  { x: { name: "h", value: 8 }, y: { name: "8", value: 8 } },
-  { x: { name: "b", value: 2 }, y: { name: "8", value: 8 } },
-  { x: { name: "g", value: 7 }, y: { name: "8", value: 8 } },
-  { x: { name: "c", value: 3 }, y: { name: "8", value: 8 } },
-  { x: { name: "f", value: 6 }, y: { name: "8", value: 8 } },
-  { x: { name: "a", value: 1 }, y: { name: "7", value: 7 } },
-  { x: { name: "b", value: 2 }, y: { name: "7", value: 7 } },
-  { x: { name: "c", value: 3 }, y: { name: "7", value: 7 } },
-  { x: { name: "d", value: 4 }, y: { name: "7", value: 7 } },
-  { x: { name: "e", value: 5 }, y: { name: "7", value: 7 } },
-  { x: { name: "f", value: 6 }, y: { name: "7", value: 7 } },
-  { x: { name: "g", value: 7 }, y: { name: "7", value: 7 } },
-  { x: { name: "h", value: 8 }, y: { name: "7", value: 7 } }
-];
-const initialWhitePlaces: Position[] = [
-  { x: { name: "d", value: 4 }, y: { name: "1", value: 1 } },
-  { x: { name: "e", value: 5 }, y: { name: "1", value: 1 } },
-  { x: { name: "a", value: 1 }, y: { name: "1", value: 1 } },
-  { x: { name: "h", value: 8 }, y: { name: "1", value: 1 } },
-  { x: { name: "b", value: 2 }, y: { name: "1", value: 1 } },
-  { x: { name: "g", value: 7 }, y: { name: "1", value: 1 } },
-  { x: { name: "c", value: 3 }, y: { name: "1", value: 1 } },
-  { x: { name: "f", value: 6 }, y: { name: "1", value: 1 } },
-  { x: { name: "a", value: 1 }, y: { name: "2", value: 2 } },
-  { x: { name: "b", value: 2 }, y: { name: "2", value: 2 } },
-  { x: { name: "c", value: 3 }, y: { name: "2", value: 2 } },
-  { x: { name: "d", value: 4 }, y: { name: "2", value: 2 } },
-  { x: { name: "e", value: 5 }, y: { name: "2", value: 2 } },
-  { x: { name: "f", value: 6 }, y: { name: "2", value: 2 } },
-  { x: { name: "g", value: 7 }, y: { name: "2", value: 2 } },
-  { x: { name: "h", value: 8 }, y: { name: "2", value: 2 } }
-]
+export type Piece = RawPiece & { side: Side };
 
 const pieces: RawPiece[] = [
   { name: "King", type: "king" },
@@ -60,9 +21,9 @@ const pieces: RawPiece[] = [
   { name: "Pawn7", type: "pawn" },
   { name: "Pawn8", type: "pawn" },
 ];
-export const blackPieces: Piece[] = pieces.map((piece, index) => (
-  { ...piece, initialPlace: initialBlackPlaces[index], currentPlace: initialBlackPlaces[index], side: "black" }
+export const blackPieces: Piece[] = pieces.map((piece) => (
+  { ...piece, side: "black" }
 ));
-export const whitePieces: Piece[] = pieces.map((piece, index) => (
-  { ...piece, initialPlace: initialWhitePlaces[index], currentPlace: initialWhitePlaces[index], side: "white" }
+export const whitePieces: Piece[] = pieces.map((piece) => (
+  { ...piece, side: "white" }
 ));

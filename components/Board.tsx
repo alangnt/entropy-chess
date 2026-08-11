@@ -1,53 +1,64 @@
 "use client"
 
-import { Piece, PieceType, blackPieces, whitePieces } from "@/utils/Pieces";
-import { initialBoard, Position } from "@/utils/Board";
+import { PieceType } from "@/utils/Pieces";
+import { Board, initialBoard, Position, Tile } from "@/utils/Board";
 import { toKey } from "@/utils/positionToKey";
+import { isSamePiece } from "@/utils/isSamePiece";
 import { useEffect, useState } from "react";
 
 export default function BoardComponent() {
-  const [selectedPiece, setSelectedPiece] = useState<Piece | null>();
+  const [board, setBoard] = useState<Board>(initialBoard);
+
+  const [selectedTile, setSelectedTile] = useState<Tile | null>();
   const [allowedMoves, setAllowedMoves] = useState<Position[]>([]);
 
-  const [boardPieces, setBoardPieces] = useState<Piece[]>([...blackPieces, ...whitePieces]);
-
-  const selectPiece = (piece: Piece): void => {
-    if (selectedPiece === piece) return setSelectedPiece(null);
-    setSelectedPiece(piece);
+  const selectTile = (tile: Tile): void => {
+    if (selectedTile === tile) return setSelectedTile(null);
+    setSelectedTile(tile);
   }
 
-  const movePiece = (tile: Position): void => {
-    if (!selectedPiece) return;
+  const movePiece = (newTile: Tile): void => {
+    if (!selectedTile) return;
 
-    const currentPlace = toKey(selectedPiece.currentPlace);
+    const oldTile = selectedTile;
 
-    const updatedPiece = {
-      ...selectedPiece,
-      currentPlace: tile
+    const oldPosition = toKey(oldTile.position);
+    const currentPosition = toKey(newTile.position);
+
+    const updatedTile = {
+      ...newTile,
+      currentPiece: selectedTile.currentPiece
     };
-    
-    const updatedBoardPieces = boardPieces.map((piece) => toKey(piece.currentPlace) === currentPlace ? updatedPiece : piece);
 
-    setBoardPieces(updatedBoardPieces);
-    return setSelectedPiece(null);
+    delete oldTile.currentPiece;
+
+    const updatedBoard = board.map((tile: Tile) => toKey(tile.position) === currentPosition ? updatedTile : tile);
+    const updatedBoardFinal = updatedBoard.map((tile: Tile) => toKey(tile.position) === oldPosition ? oldTile : tile);
+
+    setBoard(updatedBoardFinal);
+    setSelectedTile(null);
   }
 
-  const onTileClick = (piece: Piece | null, tile: Position): void => {
-    if (!selectedPiece && !piece) return;
-    if (!selectedPiece && piece && piece.side === "black") return;
+  const onTileClick = (tile: Tile): void => {
+    const piece = tile.currentPiece ?? null;
+    const position = tile.position;
+
+    if (!selectedTile && !piece) return;
+    if (!selectedTile && piece && piece.side === "black") return;
 
     const allowedKeys = new Set(allowedMoves.map(toKey));
-    console.log("Is allowed move: ", allowedKeys.has(toKey(tile)));
+    console.log("Is allowed move: ", allowedKeys.has(toKey(position)));
 
-    if (selectedPiece && allowedKeys.has(toKey(tile))) return movePiece(tile);
+    if (selectedTile && allowedKeys.has(toKey(position))) return movePiece(tile);
 
-    if (piece) return selectPiece(piece);
+    if (piece) return selectTile(tile);
   }
 
-  const calculateAllowedMoves = (piece: Piece): Position[] => {
-    const type: PieceType = piece.type;
-    const initialPlace: Position = piece.initialPlace;
-    const currentPlace: Position = piece.currentPlace;
+  const calculateAllowedMoves = (tile: Tile): Position[] => {
+    const position = tile.position;
+    const initialPiece = tile?.initialPiece ?? null;
+    const currentPiece = tile!.currentPiece!;
+    const type: PieceType = currentPiece.type;
 
     let moves: Position[] = [];
 
@@ -64,13 +75,13 @@ export default function BoardComponent() {
         break;
       case "pawn":
         moves.push({ 
-          x: { value: currentPlace.x.value }, 
-          y: { value: currentPlace.y.value + 1 } 
+          x: { value: position.x.value }, 
+          y: { value: position.y.value + 1 } 
         });
-        if (toKey(initialPlace) === toKey(currentPlace)) {
+        if (initialPiece && isSamePiece(initialPiece, currentPiece)) {
           moves.push({ 
-            x: { value: currentPlace.x.value }, 
-            y: { value: currentPlace.y.value + 2 } 
+            x: { value: position.x.value }, 
+            y: { value: position.y.value + 2 } 
           });
         }
       default:
@@ -81,27 +92,26 @@ export default function BoardComponent() {
   }
 
   useEffect(() => {
-    if (!selectedPiece) return setAllowedMoves([]);;
-    const calculatedAllowedMoves = calculateAllowedMoves(selectedPiece);
+    if (!selectedTile) return setAllowedMoves([]);;
+    const calculatedAllowedMoves = calculateAllowedMoves(selectedTile);
     console.log("Authorized moves: ", calculatedAllowedMoves);
     setAllowedMoves(calculatedAllowedMoves);
-  }, [selectedPiece]);
+  }, [selectedTile]);
 
   return (
     <div className={"grid grid-cols-8 w-fit"}>
-      {initialBoard.map((tile: Position, index: number) => {
-        const rawTile = { x: { value: tile.x.value }, y: { value: tile.y.value } };
-        const isBlackTile = (tile.x.value % 2 === 0 && tile.y.value % 2 === 0) || (tile.x.value % 2 !== 0 && tile.y.value % 2 !== 0);
-        const piece = boardPieces.find(piece => piece.currentPlace.x.value === tile.x.value && piece.currentPlace.y.value === tile.y.value) ?? null;
-        const isSelected = piece && selectedPiece === piece;
+      {board.map((tile: Tile, index: number) => {
+        const isBlackTile = (tile.position.x.value % 2 === 0 && tile.position.y.value % 2 === 0) || (tile.position.x.value % 2 !== 0 && tile.position.y.value % 2 !== 0);
+        const piece = tile?.currentPiece ?? null;
+        const isSelected = piece && selectedTile === tile;
 
         const allowedKeys = new Set(allowedMoves.map(toKey));
-        const isAllowedMove = allowedKeys.has(toKey(rawTile));
+        const isAllowedMove = allowedKeys.has(toKey(tile.position));
 
         return (
           <div
             key={index}
-            onClick={() => onTileClick(piece, rawTile)}
+            onClick={() => onTileClick(tile)}
             className={`
               flex items-center justify-center w-24 h-24 border border-foreground col-span-1 row-span-1
               ${isBlackTile && !isAllowedMove ? "bg-foreground text-background" : ""}
