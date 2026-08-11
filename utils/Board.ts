@@ -13,7 +13,7 @@ export const initialBoard: Board = [
   { position: { x: { name: "a", value: 1 }, y: { name: "8", value: 8 } }, initialPiece: { name: "Rook1", type: "rook", side: "black" }, currentPiece: { name: "Rook1", type: "rook", side: "black" } },
   { position: { x: { name: "b", value: 2 }, y: { name: "8", value: 8 } }, initialPiece: { name: "Knight1", type: "knight", side: "black" }, currentPiece: { name: "Knight1", type: "knight", side: "black" } },
   { position: { x: { name: "c", value: 3 }, y: { name: "8", value: 8 } }, initialPiece: { name: "Bishop1", type: "bishop", side: "black" }, currentPiece: { name: "Bishop1", type: "bishop", side: "black" } },
-  { position: { x: { name: "d", value: 4 }, y: { name: "8", value: 8 } }, initialPiece: { name: "Knight", type: "knight", side: "black" }, currentPiece: { name: "Knight", type: "knight", side: "black" } },
+  { position: { x: { name: "d", value: 4 }, y: { name: "8", value: 8 } }, initialPiece: { name: "King", type: "king", side: "black" }, currentPiece: { name: "King", type: "king", side: "black" } },
   { position: { x: { name: "e", value: 5 }, y: { name: "8", value: 8 } }, initialPiece: { name: "Queen", type: "queen", side: "black" }, currentPiece: { name: "Queen", type: "queen", side: "black" } },
   { position: { x: { name: "f", value: 6 }, y: { name: "8", value: 8 } }, initialPiece: { name: "Bishop2", type: "bishop", side: "black" }, currentPiece: { name: "Bishop2", type: "bishop", side: "black" } },
   { position: { x: { name: "g", value: 7 }, y: { name: "8", value: 8 } }, initialPiece: { name: "Knight2", type: "knight", side: "black" }, currentPiece: { name: "Knight2", type: "knight", side: "black" } },
