@@ -77,8 +77,9 @@ export default function BoardComponent() {
             className={`
               flex items-center justify-center w-24 h-24 border border-foreground col-span-1 row-span-1
               ${isBlackTile && !isAllowedMove ? "bg-foreground text-background" : ""}
-              ${isSelected ? 'border-red-500 shadow shadow-red-500' : ''}
-              ${isAllowedMove ? "bg-red-500" : ""}
+              ${isSelected ? 'border-green-500 shadow shadow-green-500' : ''}
+              ${selectedTile && isAllowedMove && !piece ? "bg-green-500" : ""}
+              ${selectedTile && isAllowedMove && piece && piece.side !== selectedTile.currentPiece!.side ? "bg-red-500" : ""}
             `}
           >
             <p>{piece?.name}</p>
