@@ -182,25 +182,27 @@ const calculateBishopMoves = (selectedTile: Tile, board: Board, side: Side): Pos
 const calculatePawnMoves = (position: Position, board: Board, side: Side, initialPiece: Piece | null, currentPiece: Piece): Position[] => {
   let moves: Position[] = [];
 
-  moves.push({
-    x: { value: position.x.value },
-    y: { value: side === "black" ? position.y.value - 1 : position.y.value + 1 }
-  });
-  if (initialPiece && isSamePiece(initialPiece, currentPiece)) {
-    moves.push({
-      x: { value: position.x.value },
-      y: { value: side === "black" ? position.y.value - 2 : position.y.value + 2 }
-    });
-  }
+  const topTile = board.find((tile) => tile.position.x.value === position.x.value && tile.position.y.value === position.y.value + 1);
+  const topTwoTile = board.find((tile) => tile.position.x.value === position.x.value && tile.position.y.value === position.y.value + 2);
   const topLeftTile = board.find((tile) => tile.position.x.value === position.x.value - 1 && tile.position.y.value === position.y.value + 1);
   const topRightTile = board.find((tile) => tile.position.x.value === position.x.value + 1 && tile.position.y.value === position.y.value + 1);
+  const bottomTile = board.find((tile) => tile.position.x.value === position.x.value && tile.position.y.value === position.y.value - 1);
+  const bottomTwoTile = board.find((tile) => tile.position.x.value === position.x.value && tile.position.y.value === position.y.value - 2);
   const bottomLeftTile = board.find((tile) => tile.position.x.value === position.x.value - 1 && tile.position.y.value === position.y.value - 1);
   const bottomRightTile = board.find((tile) => tile.position.x.value === position.x.value + 1 && tile.position.y.value === position.y.value - 1);
 
   if (side === "black") {
+    if (bottomTile && !bottomTile.currentPiece) moves.push({ x: { value: position.x.value }, y: { value: position.y.value - 1 } });
+    if (initialPiece && isSamePiece(initialPiece, currentPiece) && bottomTwoTile && !bottomTwoTile.currentPiece && bottomTwoTile && !bottomTwoTile.currentPiece) {
+      moves.push({ x: { value: position.x.value }, y: { value: position.y.value - 2 } });
+    }
     if (bottomLeftTile && bottomLeftTile.currentPiece && bottomLeftTile.currentPiece.side === "white") moves.push(bottomLeftTile.position);
     if (bottomRightTile && bottomRightTile.currentPiece && bottomRightTile.currentPiece.side === "white") moves.push(bottomRightTile.position);
   } else {
+    if (topTile && !topTile.currentPiece) moves.push({ x: { value: position.x.value }, y: { value: position.y.value + 1 } });
+    if (initialPiece && isSamePiece(initialPiece, currentPiece) && topTwoTile && !topTwoTile.currentPiece && topTile && !topTile.currentPiece) {
+      moves.push({ x: { value: position.x.value }, y: { value: position.y.value + 2 } });
+    }
     if (topLeftTile && topLeftTile.currentPiece && topLeftTile.currentPiece.side === "black") moves.push(topLeftTile.position);
     if (topRightTile && topRightTile.currentPiece && topRightTile.currentPiece.side === "black") moves.push(topRightTile.position);
   }
