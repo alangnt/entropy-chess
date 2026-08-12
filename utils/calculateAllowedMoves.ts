@@ -193,7 +193,7 @@ const calculatePawnMoves = (position: Position, board: Board, side: Side, initia
 
   if (side === "black") {
     if (bottomTile && !bottomTile.currentPiece) moves.push({ x: { value: position.x.value }, y: { value: position.y.value - 1 } });
-    if (initialPiece && isSamePiece(initialPiece, currentPiece) && bottomTwoTile && !bottomTwoTile.currentPiece && bottomTwoTile && !bottomTwoTile.currentPiece) {
+    if (initialPiece && isSamePiece(initialPiece, currentPiece) && bottomTwoTile && !bottomTwoTile.currentPiece && bottomTile && !bottomTile.currentPiece) {
       moves.push({ x: { value: position.x.value }, y: { value: position.y.value - 2 } });
     }
     if (bottomLeftTile && bottomLeftTile.currentPiece && bottomLeftTile.currentPiece.side === "white") moves.push(bottomLeftTile.position);

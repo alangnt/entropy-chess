@@ -1,11 +1,10 @@
-"use client"
-
 import { Board, initialBoard, Position, Tile } from "@/utils/Board";
 import { calculateAllowedMoves } from "@/utils/calculateAllowedMoves";
+import { Piece } from "@/utils/Pieces";
 import { toKey } from "@/utils/positionToKey";
 import { useEffect, useState } from "react";
 
-export default function BoardComponent() {
+export default function BoardComponent({ lostPieces, setLostPieces }: { lostPieces: Piece[], setLostPieces: (value: Piece[]) => void }) {
   const [board, setBoard] = useState<Board>(initialBoard);
 
   const [selectedTile, setSelectedTile] = useState<Tile | null>();
@@ -29,6 +28,10 @@ export default function BoardComponent() {
       currentPiece: selectedTile.currentPiece
     };
 
+    if (newTile?.currentPiece) {
+      setLostPieces([...lostPieces, newTile.currentPiece]);
+    }
+
     delete oldTile.currentPiece;
 
     const updatedBoard = board.map((tile: Tile) => toKey(tile.position) === currentPosition ? updatedTile : tile);
@@ -45,7 +48,6 @@ export default function BoardComponent() {
     if (!selectedTile && !piece) return;
 
     const allowedKeys = new Set(allowedMoves.map(toKey));
-    console.log("Is allowed move: ", allowedKeys.has(toKey(position)));
 
     const isUnallowedSide = selectedTile && selectedTile.currentPiece && tile.currentPiece ? selectedTile.currentPiece.side === tile.currentPiece.side : false;
 
@@ -59,6 +61,10 @@ export default function BoardComponent() {
     const calculatedAllowedMoves = calculateAllowedMoves(selectedTile, board);
     setAllowedMoves(calculatedAllowedMoves);
   }, [selectedTile]);
+
+  useEffect(() => {
+    console.log(lostPieces);
+  }, [lostPieces]);
 
   return (
     <div className={"grid grid-cols-8 w-fit overflow-hidden"}>
