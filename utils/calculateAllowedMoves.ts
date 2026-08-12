@@ -179,7 +179,7 @@ const calculateBishopMoves = (selectedTile: Tile, board: Board, side: Side): Pos
   return moves;
 }
 
-const calculatePawnMoves = (position: Position, side: Side, initialPiece: Piece | null, currentPiece: Piece): Position[] => {
+const calculatePawnMoves = (position: Position, board: Board, side: Side, initialPiece: Piece | null, currentPiece: Piece): Position[] => {
   let moves: Position[] = [];
 
   moves.push({
@@ -191,6 +191,18 @@ const calculatePawnMoves = (position: Position, side: Side, initialPiece: Piece 
       x: { value: position.x.value },
       y: { value: side === "black" ? position.y.value - 2 : position.y.value + 2 }
     });
+  }
+  const topLeftTile = board.find((tile) => tile.position.x.value === position.x.value - 1 && tile.position.y.value === position.y.value + 1);
+  const topRightTile = board.find((tile) => tile.position.x.value === position.x.value + 1 && tile.position.y.value === position.y.value + 1);
+  const bottomLeftTile = board.find((tile) => tile.position.x.value === position.x.value - 1 && tile.position.y.value === position.y.value - 1);
+  const bottomRightTile = board.find((tile) => tile.position.x.value === position.x.value + 1 && tile.position.y.value === position.y.value - 1);
+
+  if (side === "black") {
+    if (bottomLeftTile && bottomLeftTile.currentPiece && bottomLeftTile.currentPiece.side === "white") moves.push(bottomLeftTile.position);
+    if (bottomRightTile && bottomRightTile.currentPiece && bottomRightTile.currentPiece.side === "white") moves.push(bottomRightTile.position);
+  } else {
+    if (topLeftTile && topLeftTile.currentPiece && topLeftTile.currentPiece.side === "black") moves.push(topLeftTile.position);
+    if (topRightTile && topRightTile.currentPiece && topRightTile.currentPiece.side === "black") moves.push(topRightTile.position);
   }
 
   return moves;
@@ -222,7 +234,7 @@ export const calculateAllowedMoves = (selectedTile: Tile, board: Board): Positio
       moves = calculateBishopMoves(selectedTile, board, side);
       break;
     case "pawn":
-      moves = calculatePawnMoves(position, side, initialPiece, currentPiece);
+      moves = calculatePawnMoves(position, board, side, initialPiece, currentPiece);
       break;
     default:
       break;
