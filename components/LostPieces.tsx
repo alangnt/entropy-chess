@@ -10,7 +10,7 @@ export default function LostPiecesComponent({ lostPieces }: { lostPieces: Piece[
   }, [lostPieces]);
 
   return (
-    <div>
+    <div className="flex flex-col justify-between">
       <div>
         <p>Black - Lost Pieces: </p>
         <div>
