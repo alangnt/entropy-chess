@@ -1,11 +1,18 @@
 import { Board, initialBoard, Position, Tile } from "@/utils/Board";
 import { calculateAllowedMoves } from "@/utils/calculateAllowedMoves";
-import { Piece } from "@/utils/Pieces";
+import { Piece, Side } from "@/utils/Pieces";
 import { toKey } from "@/utils/positionToKey";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-export default function BoardComponent({ lostPieces, setLostPieces }: { lostPieces: Piece[], setLostPieces: (value: Piece[]) => void }) {
+type BoardProps = {
+  turn: Side;
+  setTurn: (value: Side) => void;
+  lostPieces: Piece[];
+  setLostPieces: (value: Piece[]) => void;
+}
+
+export default function BoardComponent({ turn, setTurn, lostPieces, setLostPieces }: BoardProps) {
   const [board, setBoard] = useState<Board>(initialBoard);
 
   const [selectedTile, setSelectedTile] = useState<Tile | null>();
@@ -40,6 +47,7 @@ export default function BoardComponent({ lostPieces, setLostPieces }: { lostPiec
 
     setBoard(updatedBoardFinal);
     setSelectedTile(null);
+    setTurn(turn === "white" ? "black" : "white");
   }
 
   const onTileClick = (tile: Tile): void => {
@@ -54,7 +62,7 @@ export default function BoardComponent({ lostPieces, setLostPieces }: { lostPiec
 
     if (selectedTile && allowedKeys.has(toKey(position)) && !isUnallowedSide) return movePiece(tile);
 
-    if (piece) return selectTile(tile);
+    if (piece && piece.side === turn) return selectTile(tile);
   }
 
   useEffect(() => {
