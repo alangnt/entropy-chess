@@ -3,6 +3,7 @@ import { calculateAllowedMoves } from "@/utils/calculateAllowedMoves";
 import { Piece } from "@/utils/Pieces";
 import { toKey } from "@/utils/positionToKey";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 export default function BoardComponent({ lostPieces, setLostPieces }: { lostPieces: Piece[], setLostPieces: (value: Piece[]) => void }) {
   const [board, setBoard] = useState<Board>(initialBoard);
@@ -88,7 +89,9 @@ export default function BoardComponent({ lostPieces, setLostPieces }: { lostPiec
               ${selectedTile && isAllowedMove && piece && piece.side !== selectedTile.currentPiece!.side ? "bg-red-500" : ""}
             `}
           >
-            <p>{piece?.name}</p>
+            {piece && (
+              <Image src={piece.imageUrl} alt={piece.name + piece.side} width={45} height={45}></Image>
+            )}
           </div>
         )
       })}

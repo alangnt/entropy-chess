@@ -1,7 +1,7 @@
 export type PieceType = "king" | "queen" | "rook" | "knight" | "bishop" | "pawn";
 export type Side = "black" | "white";
 type RawPiece = { name: string; type: PieceType };
-export type Piece = RawPiece & { side: Side };
+export type Piece = RawPiece & { side: Side, imageUrl: string };
 
 const pieces: RawPiece[] = [
   { name: "King", type: "king" },
@@ -22,8 +22,8 @@ const pieces: RawPiece[] = [
   { name: "Pawn8", type: "pawn" },
 ];
 export const blackPieces: Piece[] = pieces.map((piece) => (
-  { ...piece, side: "black" }
+  { ...piece, side: "black", imageUrl: `/pieces/${piece.type}/black` }
 ));
 export const whitePieces: Piece[] = pieces.map((piece) => (
-  { ...piece, side: "white" }
+  { ...piece, side: "white", imageUrl: `/pieces/${piece.type}/white` }
 ));
