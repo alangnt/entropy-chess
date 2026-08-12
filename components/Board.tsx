@@ -61,7 +61,7 @@ export default function BoardComponent() {
   }, [selectedTile]);
 
   return (
-    <div className={"grid grid-cols-8 w-fit"}>
+    <div className={"grid grid-cols-8 w-fit overflow-hidden"}>
       {board.map((tile: Tile, index: number) => {
         const isBlackTile = (tile.position.x.value % 2 === 0 && tile.position.y.value % 2 === 0) || (tile.position.x.value % 2 !== 0 && tile.position.y.value % 2 !== 0);
         const piece = tile?.currentPiece ?? null;
