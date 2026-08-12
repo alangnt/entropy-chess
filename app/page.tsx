@@ -10,7 +10,7 @@ export default function App() {
 
   return (
     <div>
-      <h1>Chess</h1>
+      <h1 className="text-center text-2xl py-4">Entropy Chess</h1>
 
       <div className="flex gap-2">
         <BoardComponent lostPieces={lostPieces} setLostPieces={setLostPieces}></BoardComponent>
