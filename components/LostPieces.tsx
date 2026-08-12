@@ -1,4 +1,5 @@
 import { Piece } from "@/utils/Pieces";
+import Image from "next/image";
 import { useMemo } from "react";
 
 export default function LostPiecesComponent({ lostPieces }: { lostPieces: Piece[] }) {
@@ -12,21 +13,15 @@ export default function LostPiecesComponent({ lostPieces }: { lostPieces: Piece[
   return (
     <div className="flex flex-col justify-between">
       <div>
-        <p>Black - Lost Pieces: </p>
-        <div>
-          {blackLostPieces.map((piece: Piece, index: number) => (
-            <p key={index}>{piece.name}</p>
-          ))}
-        </div>
+        {whiteLostPieces.map((piece: Piece, index: number) => (
+          <Image key={index} src={piece.imageUrl} alt={piece.name + piece.side} width={30} height={30}></Image>
+        ))}
       </div>
 
       <div>
-        <p>White - Lost Pieces: </p>
-        <div>
-          {whiteLostPieces.map((piece: Piece, index: number) => (
-            <p key={index}>{piece.name}</p>
-          ))}
-        </div>
+        {blackLostPieces.map((piece: Piece, index: number) => (
+          <Image key={index} src={piece.imageUrl} alt={piece.name + piece.side} width={30} height={30}></Image>
+        ))}
       </div>
     </div>
   )
