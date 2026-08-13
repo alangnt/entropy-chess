@@ -11,7 +11,7 @@ export default function LostPiecesComponent({ lostPieces }: { lostPieces: Piece[
   }, [lostPieces]);
 
   return (
-    <div className="flex flex-col justify-between">
+    <div className="flex flex-col justify-between border w-full h-full">
       <div>
         {whiteLostPieces.map((piece: Piece, index: number) => (
           <Image key={index} src={piece.imageUrl} alt={piece.name + piece.side} width={30} height={30}></Image>

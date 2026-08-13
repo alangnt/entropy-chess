@@ -13,9 +13,14 @@ export default function App() {
     <div>
       <h1 className="text-center text-2xl py-4">Entropy Chess</h1>
 
-      <div className="flex gap-2">
-        <BoardComponent turn={turn} setTurn={setTurn} lostPieces={lostPieces} setLostPieces={setLostPieces}></BoardComponent>
-        <LostPiecesComponent lostPieces={lostPieces}></LostPiecesComponent>
+      <div className="grid grid-cols-3 gap-2 h-full px-8">
+        <div className="col-span-2 flex items-center justify-center">
+          <BoardComponent turn={turn} setTurn={setTurn} lostPieces={lostPieces} setLostPieces={setLostPieces}></BoardComponent>
+        </div>
+
+        <div className="col-span-1">
+          <LostPiecesComponent lostPieces={lostPieces}></LostPiecesComponent>
+        </div>
       </div>
 
       <p className="text-center">Turn: {turn.charAt(0).toUpperCase() + turn.slice(1)}</p>

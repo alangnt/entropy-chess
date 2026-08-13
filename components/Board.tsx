@@ -1,3 +1,4 @@
+import LostPiecesComponent from "@/components/LostPieces";
 import { Board, initialBoard, Position, Tile } from "@/utils/Board";
 import { calculateAllowedMoves } from "@/utils/calculateAllowedMoves";
 import { Piece, Side } from "@/utils/Pieces";
@@ -33,14 +34,14 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
 
     const updatedTile = {
       ...newTile,
-      currentPiece: selectedTile.currentPiece
+      piece: { ...selectedTile.piece!, hasEverMoved: true }
     };
 
-    if (newTile?.currentPiece) {
-      setLostPieces([...lostPieces, newTile.currentPiece]);
+    if (newTile?.piece) {
+      setLostPieces([...lostPieces, newTile.piece]);
     }
 
-    delete oldTile.currentPiece;
+    delete oldTile.piece;
 
     const updatedBoard = board.map((tile: Tile) => toKey(tile.position) === currentPosition ? updatedTile : tile);
     const updatedBoardFinal = updatedBoard.map((tile: Tile) => toKey(tile.position) === oldPosition ? oldTile : tile);
@@ -51,14 +52,14 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
   }
 
   const onTileClick = (tile: Tile): void => {
-    const piece = tile.currentPiece ?? null;
+    const piece = tile.piece ?? null;
     const position = tile.position;
 
     if (!selectedTile && !piece) return;
 
     const allowedKeys = new Set(allowedMoves.map(toKey));
 
-    const isUnallowedSide = selectedTile && selectedTile.currentPiece && tile.currentPiece ? selectedTile.currentPiece.side === tile.currentPiece.side : false;
+    const isUnallowedSide = selectedTile && selectedTile.piece && tile.piece ? selectedTile.piece.side === tile.piece.side : false;
 
     if (selectedTile && allowedKeys.has(toKey(position)) && !isUnallowedSide) return movePiece(tile);
 
@@ -79,7 +80,7 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
     <div className={"grid grid-cols-8 w-fit overflow-hidden"}>
       {board.map((tile: Tile, index: number) => {
         const isBlackTile = (tile.position.x.value % 2 === 0 && tile.position.y.value % 2 === 0) || (tile.position.x.value % 2 !== 0 && tile.position.y.value % 2 !== 0);
-        const piece = tile?.currentPiece ?? null;
+        const piece = tile?.piece ?? null;
         const isSelected = piece && selectedTile === tile;
 
         const allowedKeys = new Set(allowedMoves.map(toKey));
@@ -94,7 +95,7 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
               ${isBlackTile && !isAllowedMove ? "bg-foreground text-background" : ""}
               ${isSelected ? 'border-green-500 shadow shadow-green-500' : ''}
               ${selectedTile && isAllowedMove && !piece ? "bg-green-500" : ""}
-              ${selectedTile && isAllowedMove && piece && piece.side !== selectedTile.currentPiece!.side ? "bg-red-500" : ""}
+              ${selectedTile && isAllowedMove && piece && piece.side !== selectedTile.piece!.side ? "bg-red-500" : ""}
             `}
           >
             {piece && (

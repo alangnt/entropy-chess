@@ -1,7 +1,13 @@
 import { Board, Position, Tile } from "./Board";
 import { Piece, PieceType, Side } from "./Pieces";
-import { isSamePiece } from "./isSamePiece";
 import { toKey } from "./positionToKey";
+
+const canCastlingMove = (selectedTile: Tile, board: Board, side: Side) => {
+  if (side === "black") {
+    const leftRook = board.find(tile => tile.position.x.value === 1 && tile.position.y.value === 1);
+    const rightRook = board.find(tile => tile.position.x.value === 8 && tile.position.y.value === 1);
+  }
+}
 
 const calculateKingMoves = (position: Position): Position[] => {
   let moves: Position[] = [];
@@ -41,32 +47,32 @@ const calculateRookMoves = (selectedTile: Tile, board: Board, side: Side): Posit
   const verticalTilesBottom = horizontalTiles.filter((tile) => tile.position.y.value < selectedTile.position.y.value); // bottom
 
   for (const tile of horizontalTilesLeft) {
-    if (tile.currentPiece && tile.currentPiece.side === side) break;
-    if (tile.currentPiece && tile.currentPiece.side !== side) {
+    if (tile.piece && tile.piece.side === side) break;
+    if (tile.piece && tile.piece.side !== side) {
       moves.push({ x: { value: tile.position.x.value }, y: { value: tile.position.y.value } });
       break;
     }
     moves.push({ x: { value: tile.position.x.value }, y: { value: tile.position.y.value } });
   }
   for (const tile of horizontalTilesRight) {
-    if (tile.currentPiece && tile.currentPiece.side === side) break;
-    if (tile.currentPiece && tile.currentPiece.side !== side) {
+    if (tile.piece && tile.piece.side === side) break;
+    if (tile.piece && tile.piece.side !== side) {
       moves.push({ x: { value: tile.position.x.value }, y: { value: tile.position.y.value } });
       break;
     }
     moves.push({ x: { value: tile.position.x.value }, y: { value: tile.position.y.value } });
   }
   for (const tile of verticalTilesTop) {
-    if (tile.currentPiece && tile.currentPiece.side === side) break;
-    if (tile.currentPiece && tile.currentPiece.side !== side) {
+    if (tile.piece && tile.piece.side === side) break;
+    if (tile.piece && tile.piece.side !== side) {
       moves.push({ x: { value: tile.position.x.value }, y: { value: tile.position.y.value } });
       break;
     }
     moves.push({ x: { value: tile.position.x.value }, y: { value: tile.position.y.value } });
   }
   for (const tile of verticalTilesBottom) {
-    if (tile.currentPiece && tile.currentPiece.side === side) break;
-    if (tile.currentPiece && tile.currentPiece.side !== side) {
+    if (tile.piece && tile.piece.side === side) break;
+    if (tile.piece && tile.piece.side !== side) {
       moves.push({ x: { value: tile.position.x.value }, y: { value: tile.position.y.value } });
       break;
     }
@@ -105,8 +111,8 @@ const calculateBishopMoves = (selectedTile: Tile, board: Board, side: Side): Pos
     const tile = board.find((tile) => toKey(tile.position) === toKey(position)) ?? null;
     const isSelectedPiece = !!(tile && toKey(tile.position) === toKey(selectedTile.position));
 
-    if (tile && tile.currentPiece && tile.currentPiece.side === side && !isSelectedPiece) break;
-    if (tile && tile.currentPiece && tile.currentPiece.side !== side && !isSelectedPiece) {
+    if (tile && tile.piece && tile.piece.side === side && !isSelectedPiece) break;
+    if (tile && tile.piece && tile.piece.side !== side && !isSelectedPiece) {
       moves.push(position);
       break;
     }
@@ -125,8 +131,8 @@ const calculateBishopMoves = (selectedTile: Tile, board: Board, side: Side): Pos
     const tile = board.find((tile) => toKey(tile.position) === toKey(position)) ?? null;
     const isSelectedPiece = !!(tile && toKey(tile.position) === toKey(selectedTile.position));
 
-    if (tile && tile.currentPiece && tile.currentPiece.side === side && !isSelectedPiece) break;
-    if (tile && tile.currentPiece && tile.currentPiece.side !== side && !isSelectedPiece) {
+    if (tile && tile.piece && tile.piece.side === side && !isSelectedPiece) break;
+    if (tile && tile.piece && tile.piece.side !== side && !isSelectedPiece) {
       moves.push(position);
       break;
     }
@@ -144,8 +150,8 @@ const calculateBishopMoves = (selectedTile: Tile, board: Board, side: Side): Pos
     const tile = board.find((tile) => toKey(tile.position) === toKey(position)) ?? null;
     const isSelectedPiece = !!(tile && toKey(tile.position) === toKey(selectedTile.position));
 
-    if (tile && tile.currentPiece && tile.currentPiece.side === side && !isSelectedPiece) break;
-    if (tile && tile.currentPiece && tile.currentPiece.side !== side && !isSelectedPiece) {
+    if (tile && tile.piece && tile.piece.side === side && !isSelectedPiece) break;
+    if (tile && tile.piece && tile.piece.side !== side && !isSelectedPiece) {
       moves.push(position);
       break;
     }
@@ -163,8 +169,8 @@ const calculateBishopMoves = (selectedTile: Tile, board: Board, side: Side): Pos
     const tile = board.find((tile) => toKey(tile.position) === toKey(position)) ?? null;
     const isSelectedPiece = !!(tile && toKey(tile.position) === toKey(selectedTile.position));
 
-    if (tile && tile.currentPiece && tile.currentPiece.side === side && !isSelectedPiece) break;
-    if (tile && tile.currentPiece && tile.currentPiece.side !== side && !isSelectedPiece) {
+    if (tile && tile.piece && tile.piece.side === side && !isSelectedPiece) break;
+    if (tile && tile.piece && tile.piece.side !== side && !isSelectedPiece) {
       moves.push(position);
       break;
     }
@@ -179,7 +185,7 @@ const calculateBishopMoves = (selectedTile: Tile, board: Board, side: Side): Pos
   return moves;
 }
 
-const calculatePawnMoves = (position: Position, board: Board, side: Side, initialPiece: Piece | null, currentPiece: Piece): Position[] => {
+const calculatePawnMoves = (position: Position, board: Board, side: Side, piece: Piece): Position[] => {
   let moves: Position[] = [];
 
   const topTile = board.find((tile) => tile.position.x.value === position.x.value && tile.position.y.value === position.y.value + 1);
@@ -192,19 +198,19 @@ const calculatePawnMoves = (position: Position, board: Board, side: Side, initia
   const bottomRightTile = board.find((tile) => tile.position.x.value === position.x.value + 1 && tile.position.y.value === position.y.value - 1);
 
   if (side === "black") {
-    if (bottomTile && !bottomTile.currentPiece) moves.push({ x: { value: position.x.value }, y: { value: position.y.value - 1 } });
-    if (initialPiece && isSamePiece(initialPiece, currentPiece) && bottomTwoTile && !bottomTwoTile.currentPiece && bottomTile && !bottomTile.currentPiece) {
+    if (bottomTile && !bottomTile.piece) moves.push({ x: { value: position.x.value }, y: { value: position.y.value - 1 } });
+    if (piece && !piece.hasEverMoved && bottomTwoTile && !bottomTwoTile.piece && bottomTile && !bottomTile.piece) {
       moves.push({ x: { value: position.x.value }, y: { value: position.y.value - 2 } });
     }
-    if (bottomLeftTile && bottomLeftTile.currentPiece && bottomLeftTile.currentPiece.side === "white") moves.push(bottomLeftTile.position);
-    if (bottomRightTile && bottomRightTile.currentPiece && bottomRightTile.currentPiece.side === "white") moves.push(bottomRightTile.position);
+    if (bottomLeftTile && bottomLeftTile.piece && bottomLeftTile.piece.side === "white") moves.push(bottomLeftTile.position);
+    if (bottomRightTile && bottomRightTile.piece && bottomRightTile.piece.side === "white") moves.push(bottomRightTile.position);
   } else {
-    if (topTile && !topTile.currentPiece) moves.push({ x: { value: position.x.value }, y: { value: position.y.value + 1 } });
-    if (initialPiece && isSamePiece(initialPiece, currentPiece) && topTwoTile && !topTwoTile.currentPiece && topTile && !topTile.currentPiece) {
+    if (topTile && !topTile.piece) moves.push({ x: { value: position.x.value }, y: { value: position.y.value + 1 } });
+    if (piece && !piece.hasEverMoved && topTwoTile && !topTwoTile.piece && topTile && !topTile.piece) {
       moves.push({ x: { value: position.x.value }, y: { value: position.y.value + 2 } });
     }
-    if (topLeftTile && topLeftTile.currentPiece && topLeftTile.currentPiece.side === "black") moves.push(topLeftTile.position);
-    if (topRightTile && topRightTile.currentPiece && topRightTile.currentPiece.side === "black") moves.push(topRightTile.position);
+    if (topLeftTile && topLeftTile.piece && topLeftTile.piece.side === "black") moves.push(topLeftTile.position);
+    if (topRightTile && topRightTile.piece && topRightTile.piece.side === "black") moves.push(topRightTile.position);
   }
 
   return moves;
@@ -212,10 +218,9 @@ const calculatePawnMoves = (position: Position, board: Board, side: Side, initia
 
 export const calculateAllowedMoves = (selectedTile: Tile, board: Board): Position[] => {
   const position = selectedTile.position;
-  const initialPiece = selectedTile?.initialPiece ?? null;
-  const currentPiece = selectedTile!.currentPiece!;
-  const type: PieceType = currentPiece.type;
-  const side: Side = currentPiece.side;
+  const piece = selectedTile!.piece!;
+  const type: PieceType = piece.type;
+  const side: Side = piece.side;
 
   let moves: Position[] = [];
 
@@ -236,12 +241,12 @@ export const calculateAllowedMoves = (selectedTile: Tile, board: Board): Positio
       moves = calculateBishopMoves(selectedTile, board, side);
       break;
     case "pawn":
-      moves = calculatePawnMoves(position, board, side, initialPiece, currentPiece);
+      moves = calculatePawnMoves(position, board, side, piece);
       break;
     default:
       break;
   }
 
-  const filteredMoves = moves.filter((move) => toKey(move) !== toKey(board.find((tile) => toKey(move) === toKey(tile.currentPiece && tile.currentPiece.side === side ? tile.position : null))?.position ?? null))
+  const filteredMoves = moves.filter((move) => toKey(move) !== toKey(board.find((tile) => toKey(move) === toKey(tile.piece && tile.piece.side === side ? tile.position : null))?.position ?? null))
   return filteredMoves;
 }
