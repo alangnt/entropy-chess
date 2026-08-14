@@ -13,8 +13,8 @@ export default function App() {
     <div>
       <h1 className="text-center text-2xl py-4">Entropy Chess</h1>
 
-      <div className="grid grid-cols-3 gap-2 h-full px-8">
-        <div className="col-span-2 flex items-center justify-center">
+      <div className="grid grid-cols-2 gap-2 h-full px-8">
+        <div className="col-span-1 flex items-center justify-center">
           <BoardComponent turn={turn} setTurn={setTurn} lostPieces={lostPieces} setLostPieces={setLostPieces}></BoardComponent>
         </div>
 
