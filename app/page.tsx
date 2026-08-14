@@ -23,7 +23,7 @@ export default function App() {
         </div>
       </div>
 
-      <p className="text-center">Turn: {turn.charAt(0).toUpperCase() + turn.slice(1)}</p>
+      <p className="text-center">{turn === "white" ? "Your turn" : "Opponent's turn"}</p>
     </div>
   )
 }
