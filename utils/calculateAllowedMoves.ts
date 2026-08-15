@@ -2,11 +2,41 @@ import { Board, Position, Tile } from "./Board";
 import { Piece, PieceType, Side } from "./Pieces";
 import { toKey } from "./positionToKey";
 
-const canCastlingMove = (selectedTile: Tile, board: Board, side: Side) => {
-  if (side === "black") {
-    const leftRook = board.find(tile => tile.position.x.value === 1 && tile.position.y.value === 1);
-    const rightRook = board.find(tile => tile.position.x.value === 8 && tile.position.y.value === 1);
+const calculateCastlingMoves = (selectedTile: Tile, board: Board, side: Side): Position[] => {
+  const piece = selectedTile.piece!;
+  const pieceType: "king" | "rook" = piece.type as "king" | "rook";
+
+  if (piece.hasEverMoved) return [];
+
+  let castlingMoves = [];
+
+  const yPositionValue = side === "black" ? 8 : 1;
+
+  const restOfLeftLine = board.filter(tile => tile.position.y.value === yPositionValue && tile.position.x.value > 1 && tile.position.x.value < 4);
+  console.log("Rest of left line: ", restOfLeftLine);
+  const restOfRightLine = board.filter(tile => tile.position.y.value === yPositionValue && tile.position.x.value > 4 && tile.position.x.value < 8);
+  console.log("Rest of left line: ", restOfLeftLine);
+
+  switch (pieceType) {
+    case "king":
+      const leftRookTile = board.find(tile => tile.position.x.value === 1 && tile.position.y.value === yPositionValue);
+      const rightRookTile = board.find(tile => tile.position.x.value === 8 && tile.position.y.value === yPositionValue);
+
+      if (restOfLeftLine.filter(tile => tile.piece).length === 0 && leftRookTile?.piece && !leftRookTile.piece.hasEverMoved) castlingMoves.push(leftRookTile.position);
+      if (restOfRightLine.filter(tile => tile.piece).length === 0 && rightRookTile?.piece && !rightRookTile.piece.hasEverMoved) castlingMoves.push(rightRookTile.position);
+      break;
+    case "rook":
+      const kingTile = board.find(tile => tile.position.x.value === 4 && tile.position.y.value === yPositionValue);
+
+      if (!kingTile?.piece || kingTile.piece.hasEverMoved) return [];
+      if (selectedTile.position.x.value === 1) {
+        if (restOfLeftLine.filter(tile => tile.piece).length === 0) castlingMoves.push(kingTile.position);
+      } else {
+        if (restOfRightLine.filter(tile => tile.piece).length === 0) castlingMoves.push(kingTile.position);
+      }
   }
+
+  return castlingMoves;
 }
 
 const calculateKingMoves = (position: Position): Position[] => {
@@ -17,9 +47,9 @@ const calculateKingMoves = (position: Position): Position[] => {
   moves.push({ x: { value: position.x.value + 1 }, y: { value: position.y.value + 1 } }); // top right
   moves.push({ x: { value: position.x.value - 1 }, y: { value: position.y.value } }); // left
   moves.push({ x: { value: position.x.value + 1 }, y: { value: position.y.value } }); // right
-  moves.push({ x: { value: position.x.value - 1 }, y: { value: position.y.value -1 } }); // bottom left
-  moves.push({ x: { value: position.x.value }, y: { value: position.y.value -1 } }); // bottom
-  moves.push({ x: { value: position.x.value + 1 }, y: { value: position.y.value -1 } }); // bottom right
+  moves.push({ x: { value: position.x.value - 1 }, y: { value: position.y.value - 1 } }); // bottom left
+  moves.push({ x: { value: position.x.value }, y: { value: position.y.value - 1 } }); // bottom
+  moves.push({ x: { value: position.x.value + 1 }, y: { value: position.y.value - 1 } }); // bottom right
 
   return moves;
 }
@@ -223,15 +253,18 @@ export const calculateAllowedMoves = (selectedTile: Tile, board: Board): Positio
   const side: Side = piece.side;
 
   let moves: Position[] = [];
+  let castlingMoves: Position[] = [];
 
   switch (type) {
     case "king":
+      castlingMoves = calculateCastlingMoves(selectedTile, board, side);
       moves = calculateKingMoves(position);
       break;
     case "queen":
       moves = calculateQueenMoves(selectedTile, board, side);
       break;
     case "rook":
+      castlingMoves = calculateCastlingMoves(selectedTile, board, side);
       moves = calculateRookMoves(selectedTile, board, side);
       break;
     case "knight":
@@ -248,5 +281,5 @@ export const calculateAllowedMoves = (selectedTile: Tile, board: Board): Positio
   }
 
   const filteredMoves = moves.filter((move) => toKey(move) !== toKey(board.find((tile) => toKey(move) === toKey(tile.piece && tile.piece.side === side ? tile.position : null))?.position ?? null))
-  return filteredMoves;
+  return castlingMoves.length > 0 ? [...castlingMoves, ...filteredMoves] : filteredMoves;
 }
