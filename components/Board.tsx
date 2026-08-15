@@ -38,8 +38,8 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
 
     const updatedTile = isCastlingMove ? {
       position: pieceType === "king"
-        ? { x: { value: isOldTileLeftRook ? 2 : 8 }, y: { value: oldTile.position.y.value } }
-        : { x: { value: isNewTileLeftRook ? 3 : 5 }, y: { value: oldTile.position.y.value } },
+        ? { x: { value: isOldTileLeftRook ? 3 : 7 }, y: { value: oldTile.position.y.value } }
+        : { x: { value: isNewTileLeftRook ? 4 : 6 }, y: { value: oldTile.position.y.value } },
       piece: { ...selectedTile.piece!, hasEverMoved: true }
     } : {
       ...newTile,
@@ -58,13 +58,13 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
 
       const leftRookTile = board.find(tile => tile.position.x.value === 1 && tile.position.y.value === oldTile.position.y.value);
       const rightRookTile = board.find(tile => tile.position.x.value === 8 && tile.position.y.value === oldTile.position.y.value);
-      const kingTile = board.find(tile => tile.position.x.value === 4 && tile.position.y.value === oldTile.position.y.value);
+      const kingTile = board.find(tile => tile.position.x.value === 5 && tile.position.y.value === oldTile.position.y.value);
 
       const secondTileToUpdate = pieceType === "king" ? {
-        position: { x: { value: isNewTileLeftRook ? 3 : 5 }, y: { value: newTile.position.y.value } },
+        position: { x: { value: isNewTileLeftRook ? 4 : 6 }, y: { value: newTile.position.y.value } },
         piece: isNewTileLeftRook ? leftRookTile?.piece : rightRookTile?.piece
       } : {
-        position: { x: { value: isOldTileLeftRook ? 2 : 8 }, y: { value: newTile.position.y.value } },
+        position: { x: { value: isOldTileLeftRook ? 3 : 7 }, y: { value: newTile.position.y.value } },
         piece: kingTile?.piece
       };
 

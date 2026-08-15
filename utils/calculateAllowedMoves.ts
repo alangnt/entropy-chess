@@ -12,9 +12,9 @@ const calculateCastlingMoves = (selectedTile: Tile, board: Board, side: Side): P
 
   const yPositionValue = side === "black" ? 8 : 1;
 
-  const restOfLeftLine = board.filter(tile => tile.position.y.value === yPositionValue && tile.position.x.value > 1 && tile.position.x.value < 4);
+  const restOfLeftLine = board.filter(tile => tile.position.y.value === yPositionValue && tile.position.x.value > 1 && tile.position.x.value < 5);
   console.log("Rest of left line: ", restOfLeftLine);
-  const restOfRightLine = board.filter(tile => tile.position.y.value === yPositionValue && tile.position.x.value > 4 && tile.position.x.value < 8);
+  const restOfRightLine = board.filter(tile => tile.position.y.value === yPositionValue && tile.position.x.value > 5 && tile.position.x.value < 8);
   console.log("Rest of left line: ", restOfLeftLine);
 
   switch (pieceType) {
