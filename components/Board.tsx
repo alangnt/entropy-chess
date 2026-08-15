@@ -24,7 +24,7 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
     setSelectedTile(tile);
   }
 
-  const movePiece = (newTile: Tile): void => {
+  const movePiece = (newTile: Tile, isCastlingMove: boolean): void => {
     if (!selectedTile) return;
 
     const oldTile = selectedTile;
@@ -32,7 +32,16 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
     const oldPosition = toKey(oldTile.position);
     const currentPosition = toKey(newTile.position);
 
-    const updatedTile = {
+    const pieceType = oldTile.piece!.type;
+    const isOldTileLeftRook = oldTile.position.x.value === 1;
+    const isNewTileLeftRook = newTile.position.x.value === 1;
+
+    const updatedTile = isCastlingMove ? {
+      position: pieceType === "king"
+        ? { x: { value: isOldTileLeftRook ? 2 : 8 }, y: { value: oldTile.position.y.value } }
+        : { x: { value: isNewTileLeftRook ? 3 : 5 }, y: { value: oldTile.position.y.value } },
+      piece: { ...selectedTile.piece!, hasEverMoved: true }
+    } : {
       ...newTile,
       piece: { ...selectedTile.piece!, hasEverMoved: true }
     };
@@ -43,10 +52,33 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
 
     delete oldTile.piece;
 
-    const updatedBoard = board.map((tile: Tile) => toKey(tile.position) === currentPosition ? updatedTile : tile);
-    const updatedBoardFinal = updatedBoard.map((tile: Tile) => toKey(tile.position) === oldPosition ? oldTile : tile);
+    if (isCastlingMove) {
+      const updatedBoard = board.map(tile => toKey(tile.position) === toKey(updatedTile.position) ? updatedTile : tile);
+      const removeOldTileBoard = updatedBoard.map((tile: Tile) => toKey(tile.position) === oldPosition ? oldTile : tile);
 
-    setBoard(updatedBoardFinal);
+      const leftRookTile = board.find(tile => tile.position.x.value === 1 && tile.position.y.value === oldTile.position.y.value);
+      const rightRookTile = board.find(tile => tile.position.x.value === 8 && tile.position.y.value === oldTile.position.y.value);
+      const kingTile = board.find(tile => tile.position.x.value === 4 && tile.position.y.value === oldTile.position.y.value);
+
+      const secondTileToUpdate = pieceType === "king" ? {
+        position: { x: { value: isNewTileLeftRook ? 3 : 5 }, y: { value: newTile.position.y.value } },
+        piece: isNewTileLeftRook ? leftRookTile?.piece : rightRookTile?.piece
+      } : {
+        position: { x: { value: isOldTileLeftRook ? 2 : 8 }, y: { value: newTile.position.y.value } },
+        piece: kingTile?.piece
+      };
+
+      delete newTile.piece;
+      const removeNewTileBoard = removeOldTileBoard.map((tile: Tile) => toKey(tile.position) === currentPosition ? newTile : tile);
+      const addNewTileBoard = removeNewTileBoard.map((tile: Tile) => toKey(tile.position) === toKey(secondTileToUpdate.position) ? secondTileToUpdate : tile);
+      setBoard(addNewTileBoard);
+    } else {
+      const updatedBoard = board.map((tile: Tile) => toKey(tile.position) === currentPosition ? updatedTile : tile);
+      const updatedBoardFinal = updatedBoard.map((tile: Tile) => toKey(tile.position) === oldPosition ? oldTile : tile);
+
+      setBoard(updatedBoardFinal);
+    }
+
     setSelectedTile(null);
     setTurn(turn === "white" ? "black" : "white");
   }
@@ -59,9 +91,9 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
 
     const allowedKeys = new Set(allowedMoves.map(toKey));
 
-    const isUnallowedSide = selectedTile && selectedTile.piece && tile.piece ? selectedTile.piece.side === tile.piece.side : false;
+    const isCastlingMove = selectedTile && selectedTile.piece && tile.piece ? selectedTile.piece.side === tile.piece.side : false;
 
-    if (selectedTile && allowedKeys.has(toKey(position)) && !isUnallowedSide) return movePiece(tile);
+    if (selectedTile && allowedKeys.has(toKey(position))) return movePiece(tile, isCastlingMove);
 
     if (piece && piece.side === turn) return selectTile(tile);
   }
@@ -75,6 +107,10 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
   useEffect(() => {
     console.log(lostPieces);
   }, [lostPieces]);
+
+  useEffect(() => {
+    console.log(allowedMoves);
+  }, [allowedMoves]);
 
   return (
     <div className={"grid grid-cols-8 w-fit overflow-hidden"}>
@@ -96,6 +132,7 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
               ${isSelected ? 'border-green-500 shadow shadow-green-500' : ''}
               ${selectedTile && isAllowedMove && !piece ? "bg-green-500" : ""}
               ${selectedTile && isAllowedMove && piece && piece.side !== selectedTile.piece!.side ? "bg-red-500" : ""}
+              ${selectedTile && isAllowedMove && piece && piece.side === selectedTile.piece!.side ? "bg-orange-500" : ""}
             `}
           >
             {piece && (
