@@ -1,4 +1,4 @@
-import { Board, initialBoard, Position, Tile } from "@/utils/Board";
+import { Board, initialBoard, Move, Tile } from "@/utils/Board";
 import { calculateAllowedMoves } from "@/utils/calculateAllowedMoves";
 import { Piece, Side } from "@/utils/Pieces";
 import { toKey } from "@/utils/positionToKey";
@@ -16,7 +16,7 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
   const [board, setBoard] = useState<Board>(initialBoard);
 
   const [selectedTile, setSelectedTile] = useState<Tile | null>();
-  const [allowedMoves, setAllowedMoves] = useState<Position[]>([]);
+  const [allowedMoves, setAllowedMoves] = useState<Move[]>([]);
 
   const selectTile = (tile: Tile): void => {
     if (selectedTile === tile) return setSelectedTile(null);
@@ -44,6 +44,18 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
       ...newTile,
       piece: { ...selectedTile.piece!, hasEverMoved: true }
     };
+
+    if (pieceType === "pawn") {
+      const side = oldTile.piece!.side;
+
+      if (side === "black") {
+        if (oldTile.position.y.value - newTile.position.y.value === 2) updatedTile.piece.canBeEnPassant = true;
+        else updatedTile.piece.canBeEnPassant = false;
+      } else {
+        if (newTile.position.y.value - oldTile.position.y.value === 2) updatedTile.piece.canBeEnPassant = true;
+        else updatedTile.piece.canBeEnPassant = false;
+      }
+    }
 
     if (newTile?.piece && !isCastlingMove) {
       setLostPieces([...lostPieces, newTile.piece]);
