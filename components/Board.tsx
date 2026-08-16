@@ -45,7 +45,7 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
       piece: { ...selectedTile.piece!, hasEverMoved: true }
     };
 
-    if (newTile?.piece) {
+    if (newTile?.piece && !isCastlingMove) {
       setLostPieces([...lostPieces, newTile.piece]);
     }
 
