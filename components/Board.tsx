@@ -37,8 +37,8 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
 
     const updatedTile = isCastlingMove ? {
       position: pieceType === "king"
-        ? { x: { value: isOldTileLeftRook ? 3 : 7 }, y: { value: oldTile.position.y.value } }
-        : { x: { value: isNewTileLeftRook ? 4 : 6 }, y: { value: oldTile.position.y.value } },
+        ? { x: { value: isNewTileLeftRook ? 3 : 7 }, y: { value: oldTile.position.y.value } }
+        : { x: { value: isOldTileLeftRook ? 4 : 6 }, y: { value: oldTile.position.y.value } },
       piece: { ...selectedTile.piece!, hasEverMoved: true }
     } : {
       ...newTile,
