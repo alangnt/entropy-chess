@@ -27,6 +27,7 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
     if (!selectedTile) return;
 
     const oldTile = selectedTile;
+    const side = oldTile.piece!.side;
 
     const oldPosition = toKey(oldTile.position);
     const currentPosition = toKey(newTile.position);
@@ -34,6 +35,8 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
     const pieceType = oldTile.piece!.type;
     const isOldTileLeftRook = oldTile.position.x.value === 1;
     const isNewTileLeftRook = newTile.position.x.value === 1;
+
+    const isEnPassantMove = !!(board.find(tile => tile.piece?.side !== oldTile.piece!.side && tile.position.x.value === newTile.position.x.value && tile.position.y.value === (side === "black" ? newTile.position.y.value + 1 : newTile.position.y.value - 1))?.piece?.canBeEnPassant);
 
     const updatedTile = isCastlingMove ? {
       position: pieceType === "king"
@@ -60,6 +63,10 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
     if (newTile?.piece && !isCastlingMove) {
       setLostPieces([...lostPieces, newTile.piece]);
     }
+    if (isEnPassantMove) {
+      const enPassantTile = board.find(tile => tile.position.x.value === newTile.position.x.value && tile.position.y.value === (side === "black" ? newTile.position.y.value + 1 : newTile.position.y.value - 1));
+      setLostPieces([...lostPieces, enPassantTile!.piece!]);
+    }
 
     delete oldTile.piece;
 
@@ -83,6 +90,17 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
       const removeNewTileBoard = removeOldTileBoard.map((tile: Tile) => toKey(tile.position) === currentPosition ? newTile : tile);
       const addNewTileBoard = removeNewTileBoard.map((tile: Tile) => toKey(tile.position) === toKey(secondTileToUpdate.position) ? secondTileToUpdate : tile);
       setBoard(addNewTileBoard);
+    } else if (isEnPassantMove) {
+      const enPassantTile = board.find(tile => tile.piece?.side !== side && tile.position.x.value === newTile.position.x.value && tile.position.y.value === (side === "black" ? newTile.position.y.value + 1 : newTile.position.y.value - 1));
+
+      const updatePieceBoard = board.map((tile: Tile) => toKey(tile.position) === currentPosition ? updatedTile : tile);
+      const removeOldPieceBoard = updatePieceBoard.map((tile: Tile) => toKey(tile.position) === oldPosition ? oldTile : tile);
+
+      delete enPassantTile?.piece;
+
+      const removeEnPassantTileBoard = removeOldPieceBoard.map((tile: Tile) => toKey(tile.position) === toKey(enPassantTile!.position) ? enPassantTile! : tile);
+
+      setBoard(removeEnPassantTileBoard);
     } else {
       const updatedBoard = board.map((tile: Tile) => toKey(tile.position) === currentPosition ? updatedTile : tile);
       const updatedBoardFinal = updatedBoard.map((tile: Tile) => toKey(tile.position) === oldPosition ? oldTile : tile);
@@ -116,12 +134,8 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
   }, [selectedTile]);
 
   useEffect(() => {
-    console.log(lostPieces);
+    console.log("Lost pieces: ", lostPieces);
   }, [lostPieces]);
-
-  useEffect(() => {
-    console.log(allowedMoves);
-  }, [allowedMoves]);
 
   return (
     <div className={"grid grid-cols-8 w-fit overflow-hidden"}>
