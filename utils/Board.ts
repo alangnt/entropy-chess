@@ -6,7 +6,7 @@ export type Position = {
   x: { name?: PositionX; value: number };
   y: { name?: PositionY; value: number };
 };
-export type Move = Position & { isCastlingMove?: boolean; isEnPassantMove?: boolean };
+export type Move = Position & { isEnPassantMove?: boolean };
 export type Tile = { position: Position; piece?: Piece };
 export type Board = Tile[];
 

@@ -20,17 +20,17 @@ const calculateCastlingMoves = (selectedTile: Tile, board: Board, side: Side): M
       const leftRookTile = board.find(tile => tile.position.x.value === 1 && tile.position.y.value === yPositionValue);
       const rightRookTile = board.find(tile => tile.position.x.value === 8 && tile.position.y.value === yPositionValue);
 
-      if (restOfLeftLine.filter(tile => tile.piece).length === 0 && leftRookTile?.piece && !leftRookTile.piece.hasEverMoved) castlingMoves.push({ ...leftRookTile.position, isCastlingMove: true });
-      if (restOfRightLine.filter(tile => tile.piece).length === 0 && rightRookTile?.piece && !rightRookTile.piece.hasEverMoved) castlingMoves.push({ ...rightRookTile.position, isCastlingMove: true });
+      if (restOfLeftLine.filter(tile => tile.piece).length === 0 && leftRookTile?.piece && !leftRookTile.piece.hasEverMoved) castlingMoves.push(leftRookTile.position);
+      if (restOfRightLine.filter(tile => tile.piece).length === 0 && rightRookTile?.piece && !rightRookTile.piece.hasEverMoved) castlingMoves.push(rightRookTile.position);
       break;
     case "rook":
       const kingTile = board.find(tile => tile.position.x.value === 5 && tile.position.y.value === yPositionValue);
 
       if (!kingTile?.piece || kingTile.piece.hasEverMoved) return [];
       if (selectedTile.position.x.value === 1) {
-        if (restOfLeftLine.filter(tile => tile.piece).length === 0) castlingMoves.push({ ...kingTile.position, isCastlingMove: true });
+        if (restOfLeftLine.filter(tile => tile.piece).length === 0) castlingMoves.push(kingTile.position);
       } else {
-        if (restOfRightLine.filter(tile => tile.piece).length === 0) castlingMoves.push({ ...kingTile.position, isCastlingMove: true });
+        if (restOfRightLine.filter(tile => tile.piece).length === 0) castlingMoves.push(kingTile.position);
       }
   }
 
@@ -52,7 +52,7 @@ const calculateEnPassantMoves = (selectedTile: Tile, board: Board, side: Side): 
 }
 
 const calculateKingMoves = (position: Position): Move[] => {
-  let moves: Position[] = [];
+  let moves: Move[] = [];
 
   moves.push({ x: { value: position.x.value - 1 }, y: { value: position.y.value + 1 } }); // top left
   moves.push({ x: { value: position.x.value }, y: { value: position.y.value + 1 } }); // top
@@ -67,7 +67,7 @@ const calculateKingMoves = (position: Position): Move[] => {
 }
 
 const calculateQueenMoves = (selectedTile: Tile, board: Board, side: Side): Move[] => {
-  let moves: Position[] = [];
+  let moves: Move[] = [];
 
   const rookMoves = calculateRookMoves(selectedTile, board, side);
   const bishopMoves = calculateBishopMoves(selectedTile, board, side);
@@ -78,7 +78,7 @@ const calculateQueenMoves = (selectedTile: Tile, board: Board, side: Side): Move
 }
 
 const calculateRookMoves = (selectedTile: Tile, board: Board, side: Side): Move[] => {
-  let moves: Position[] = [];
+  let moves: Move[] = [];
 
   const horizontalTiles = board.filter((tile) => tile.position.x.value === selectedTile.position.x.value && tile.position.y.value !== selectedTile.position.y.value);
   const verticalTiles = board.filter((tile) => tile.position.y.value === selectedTile.position.y.value && tile.position.x.value !== selectedTile.position.x.value);
@@ -125,7 +125,7 @@ const calculateRookMoves = (selectedTile: Tile, board: Board, side: Side): Move[
 }
 
 const calculateKnightMoves = (position: Position): Move[] => {
-  let moves: Position[] = [];
+  let moves: Move[] = [];
 
   moves.push(
     { x: { value: position.x.value - 1 }, y: { value: position.y.value + 2 } },
@@ -142,7 +142,7 @@ const calculateKnightMoves = (position: Position): Move[] => {
 }
 
 const calculateBishopMoves = (selectedTile: Tile, board: Board, side: Side): Move[] => {
-  let moves: Position[] = [];
+  let moves: Move[] = [];
 
   let positionX = selectedTile.position.x.value;
   let positionY = selectedTile.position.y.value;
@@ -228,7 +228,7 @@ const calculateBishopMoves = (selectedTile: Tile, board: Board, side: Side): Mov
 }
 
 const calculatePawnMoves = (position: Position, board: Board, side: Side, piece: Piece): Move[] => {
-  let moves: Position[] = [];
+  let moves: Move[] = [];
 
   const topTile = board.find((tile) => tile.position.x.value === position.x.value && tile.position.y.value === position.y.value + 1);
   const topTwoTile = board.find((tile) => tile.position.x.value === position.x.value && tile.position.y.value === position.y.value + 2);
@@ -264,9 +264,9 @@ export const calculateAllowedMoves = (selectedTile: Tile, board: Board): Move[] 
   const type: PieceType = piece.type;
   const side: Side = piece.side;
 
-  let moves: Move[] = [];
-  let castlingMoves: Move[] = [];
-  let enPassantMoves: Move[] = [];
+  let moves: Position[] = [];
+  let castlingMoves: Position[] = [];
+  let enPassantMoves: Position[] = [];
 
   switch (type) {
     case "king":
