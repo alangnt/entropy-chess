@@ -1,4 +1,3 @@
-import LostPiecesComponent from "@/components/LostPieces";
 import { Board, initialBoard, Position, Tile } from "@/utils/Board";
 import { calculateAllowedMoves } from "@/utils/calculateAllowedMoves";
 import { Piece, Side } from "@/utils/Pieces";
