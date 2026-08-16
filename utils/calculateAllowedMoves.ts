@@ -40,12 +40,18 @@ const calculateCastlingMoves = (selectedTile: Tile, board: Board, side: Side): M
 const calculateEnPassantMoves = (selectedTile: Tile, board: Board, side: Side): Move[] => {
   const enPassantMoves: Move[] = [];
 
-  if ((side === "black" && selectedTile.position.y.value === 4) || (side === "white" && selectedTile.position.y.value === 5)) {
+  if ((side === "black" && selectedTile.position.y.value === 4)) {
     const leftTile = board.find(tile => tile.position.x.value === selectedTile.position.x.value - 1 && tile.position.y.value === selectedTile.position.y.value);
     const rightTile = board.find(tile => tile.position.x.value === selectedTile.position.x.value + 1 && tile.position.y.value === selectedTile.position.y.value);
 
-    if (leftTile && leftTile.piece && leftTile.piece.type === "pawn" && leftTile.piece.canBeEnPassant) enPassantMoves.push({ ...leftTile.position, isEnPassantMove: true });
-    if (rightTile && rightTile.piece && rightTile.piece.type === "pawn" && rightTile.piece.canBeEnPassant) enPassantMoves.push({ ...rightTile.position, isEnPassantMove: true });
+    if (leftTile && leftTile.piece && leftTile.piece.type === "pawn" && leftTile.piece.canBeEnPassant) enPassantMoves.push({ ...leftTile.position, y: { value: 3 }, isEnPassantMove: true });
+    if (rightTile && rightTile.piece && rightTile.piece.type === "pawn" && rightTile.piece.canBeEnPassant) enPassantMoves.push({ ...rightTile.position, y: { value: 3 }, isEnPassantMove: true });
+  } else if (side === "white" && selectedTile.position.y.value === 5) {
+    const leftTile = board.find(tile => tile.position.x.value === selectedTile.position.x.value - 1 && tile.position.y.value === selectedTile.position.y.value);
+    const rightTile = board.find(tile => tile.position.x.value === selectedTile.position.x.value + 1 && tile.position.y.value === selectedTile.position.y.value);
+
+    if (leftTile && leftTile.piece && leftTile.piece.type === "pawn" && leftTile.piece.canBeEnPassant) enPassantMoves.push({ ...leftTile.position, y: { value: 6 }, isEnPassantMove: true });
+    if (rightTile && rightTile.piece && rightTile.piece.type === "pawn" && rightTile.piece.canBeEnPassant) enPassantMoves.push({ ...rightTile.position, y: { value: 6 }, isEnPassantMove: true });
   }
 
   return enPassantMoves;
