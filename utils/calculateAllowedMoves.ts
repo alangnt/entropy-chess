@@ -26,7 +26,7 @@ const calculateCastlingMoves = (selectedTile: Tile, board: Board, side: Side): P
       if (restOfRightLine.filter(tile => tile.piece).length === 0 && rightRookTile?.piece && !rightRookTile.piece.hasEverMoved) castlingMoves.push(rightRookTile.position);
       break;
     case "rook":
-      const kingTile = board.find(tile => tile.position.x.value === 4 && tile.position.y.value === yPositionValue);
+      const kingTile = board.find(tile => tile.position.x.value === 5 && tile.position.y.value === yPositionValue);
 
       if (!kingTile?.piece || kingTile.piece.hasEverMoved) return [];
       if (selectedTile.position.x.value === 1) {
