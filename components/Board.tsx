@@ -61,12 +61,12 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
         if (oldTile.position.y.value - newTile.position.y.value === 2) updatedTile.piece.canBeEnPassant = true;
         else updatedTile.piece.canBeEnPassant = false;
 
-        if (newTile.position.y.value === 1) updatedTile.piece = { name: "Queen", type: "queen", side: "black", imageUrl: "/pieces/queen/black.svg", hasEverMoved: true };
+        if (newTile.position.y.value === 1) updatedTile.piece = { type: "queen", side: "black", imageUrl: "/pieces/queen/black.svg", hasEverMoved: true };
       } else {
         if (newTile.position.y.value - oldTile.position.y.value === 2) updatedTile.piece.canBeEnPassant = true;
         else updatedTile.piece.canBeEnPassant = false;
 
-        if (newTile.position.y.value === 8) updatedTile.piece = { name: "Queen", type: "queen", side: "white", imageUrl: "/pieces/queen/white.svg", hasEverMoved: true };
+        if (newTile.position.y.value === 8) updatedTile.piece = { type: "queen", side: "white", imageUrl: "/pieces/queen/white.svg", hasEverMoved: true };
       }
     }
 
@@ -171,7 +171,7 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
             `}
           >
             {piece && (
-              <Image src={piece.imageUrl} alt={piece.name + piece.side} width={45} height={45}></Image>
+              <Image src={piece.imageUrl} alt={piece.type + piece.side} width={45} height={45}></Image>
             )}
           </div>
         )

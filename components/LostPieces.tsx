@@ -15,13 +15,13 @@ export default function LostPiecesComponent({ lostPieces }: { lostPieces: Piece[
       <div className="border w-full h-full rounded-xl bg-background">
         <div>
           {whiteLostPieces.map((piece: Piece, index: number) => (
-            <Image key={index} src={piece.imageUrl} alt={piece.name + piece.side} width={30} height={30}></Image>
+            <Image key={index} src={piece.imageUrl} alt={piece.type + piece.side} width={30} height={30}></Image>
           ))}
         </div>
 
         <div>
           {blackLostPieces.map((piece: Piece, index: number) => (
-            <Image key={index} src={piece.imageUrl} alt={piece.name + piece.side} width={30} height={30}></Image>
+            <Image key={index} src={piece.imageUrl} alt={piece.type + piece.side} width={30} height={30}></Image>
           ))}
         </div>
       </div>
