@@ -18,9 +18,15 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
   const [selectedTile, setSelectedTile] = useState<Tile | null>();
   const [allowedMoves, setAllowedMoves] = useState<Move[]>([]);
 
+  const [isPromoting, setIsPromoting] = useState<boolean>(false);
+
   const selectTile = (tile: Tile): void => {
     if (selectedTile === tile) return setSelectedTile(null);
     setSelectedTile(tile);
+  }
+
+  const promotePawn = (side: Side) => {
+    setIsPromoting(true);
   }
 
   const movePiece = (newTile: Tile, isCastlingMove: boolean): void => {
@@ -54,9 +60,13 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
       if (side === "black") {
         if (oldTile.position.y.value - newTile.position.y.value === 2) updatedTile.piece.canBeEnPassant = true;
         else updatedTile.piece.canBeEnPassant = false;
+
+        if (newTile.position.y.value === 1) updatedTile.piece = { name: "Queen", type: "queen", side: "black", imageUrl: "/pieces/queen/black.svg", hasEverMoved: true };
       } else {
         if (newTile.position.y.value - oldTile.position.y.value === 2) updatedTile.piece.canBeEnPassant = true;
         else updatedTile.piece.canBeEnPassant = false;
+
+        if (newTile.position.y.value === 8) updatedTile.piece = { name: "Queen", type: "queen", side: "white", imageUrl: "/pieces/queen/white.svg", hasEverMoved: true };
       }
     }
 
