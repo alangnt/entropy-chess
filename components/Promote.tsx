@@ -1,11 +1,15 @@
 import { Piece, Side } from "@/utils/Pieces";
+import { Position, Tile } from "@/utils/Board";
+import Image from "next/image";
 
 type PromoteProps = {
   side: Side;
+  selectedTile: Tile | null;
   setIsPromoting: (value: boolean) => void;
+  setSelectedPromotionPiece: (value: { piece: Piece; position: Position; } | null) => void;
 }
 
-export default function PromoteComponent({ side, setIsPromoting }: PromoteProps) {
+export default function PromoteComponent({ side, selectedTile, setIsPromoting, setSelectedPromotionPiece }: PromoteProps) {
   const pieces: Piece[] = [
     { type: "queen", side: side, imageUrl: `/pieces/queen/${side}.svg`, hasEverMoved: true },
     { type: "rook", side: side, imageUrl: `/pieces/rook/${side}.svg`, hasEverMoved: true },
@@ -13,9 +17,28 @@ export default function PromoteComponent({ side, setIsPromoting }: PromoteProps)
     { type: "knight", side: side, imageUrl: `/pieces/knight/${side}.svg`, hasEverMoved: true }
   ];
 
-  return (
-    <div>
+  const onTileClick = (piece: Piece) => {
+    const position = selectedTile ? selectedTile.position : null;
+    if (!position) return setSelectedPromotionPiece(null);
 
+    setSelectedPromotionPiece({ piece: piece, position: { ...position, y: { value: (side === "black" ? position.y.value - 1 : position.y.value + 1) } } });
+    setIsPromoting(false);
+  }
+
+  return (
+    <div className="absolute w-screen h-screen top-O bottom-0 flex items-center justify-center">
+      <div className="flex items-center justify-center gap-4 border rounded-lg bg-background p-8">
+        {pieces.map((piece: Piece) => (
+          <div key={piece.type} className="hover:bg-gray-200 transition p-2" onClick={() => onTileClick(piece)}>
+            <Image
+              src={piece.imageUrl}
+              alt={piece.type + piece.side}
+              width={40}
+              height={40}
+            ></Image>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

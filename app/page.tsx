@@ -2,20 +2,35 @@
 
 import BoardComponent from "@/components/Board";
 import LostPiecesComponent from "@/components/LostPieces";
+import PromoteComponent from "@/components/Promote";
 import { Piece, Side } from "@/utils/Pieces";
+import { Position, Tile } from "@/utils/Board";
 import { useState } from "react";
 
 export default function App() {
   const [turn, setTurn] = useState<Side>("white");
+  const [selectedTile, setSelectedTile] = useState<Tile | null>(null);
   const [lostPieces, setLostPieces] = useState<Piece[]>([]);
+  const [isPromoting, setIsPromoting] = useState<boolean>(false);
+  const [selectedPromotionPiece, setSelectedPromotionPiece] = useState<{ piece: Piece; position: Position; } | null>(null);
 
   return (
-    <div>
+    <div className="relative">
       <h1 className="text-center text-2xl py-4">Entropy Chess</h1>
 
       <div className="grid grid-cols-4 gap-2 h-full px-8">
         <div className="col-span-3 xl:col-span-2 flex items-center justify-center">
-          <BoardComponent turn={turn} setTurn={setTurn} lostPieces={lostPieces} setLostPieces={setLostPieces}></BoardComponent>
+          <BoardComponent
+            turn={turn}
+            setTurn={setTurn}
+            selectedTile={selectedTile}
+            setSelectedTile={setSelectedTile}
+            lostPieces={lostPieces}
+            setLostPieces={setLostPieces}
+            isPromoting={isPromoting}
+            setIsPromoting={setIsPromoting}
+            selectedPromotionPiece={selectedPromotionPiece}
+          ></BoardComponent>
         </div>
 
         <div className="col-span-1 xl:col-span-2">
@@ -24,6 +39,15 @@ export default function App() {
       </div>
 
       <p className="text-center">{turn === "white" ? "Your turn" : "Opponent's turn"}</p>
+
+      {isPromoting && (
+        <PromoteComponent
+          side={turn}
+          selectedTile={selectedTile}
+          setIsPromoting={setIsPromoting}
+          setSelectedPromotionPiece={setSelectedPromotionPiece}
+        ></PromoteComponent>
+      )}
     </div>
   )
 }

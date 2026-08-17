@@ -1,4 +1,4 @@
-import { Board, initialBoard, Move, Tile } from "@/utils/Board";
+import { Board, initialBoard, Move, Position, Tile } from "@/utils/Board";
 import { calculateAllowedMoves } from "@/utils/calculateAllowedMoves";
 import { Piece, Side } from "@/utils/Pieces";
 import { toKey } from "@/utils/positionToKey";
@@ -8,17 +8,29 @@ import Image from "next/image";
 type BoardProps = {
   turn: Side;
   setTurn: (value: Side) => void;
+  selectedTile: Tile | null;
+  setSelectedTile: (value: Tile | null) => void;
   lostPieces: Piece[];
   setLostPieces: (value: Piece[]) => void;
+  isPromoting: boolean;
+  setIsPromoting: (value: boolean) => void;
+  selectedPromotionPiece: { piece: Piece; position: Position; } | null;
 }
 
-export default function BoardComponent({ turn, setTurn, lostPieces, setLostPieces }: BoardProps) {
+export default function BoardComponent({
+  turn,
+  setTurn,
+  selectedTile,
+  setSelectedTile,
+  lostPieces,
+  setLostPieces,
+  isPromoting,
+  setIsPromoting,
+  selectedPromotionPiece
+}: BoardProps) {
   const [board, setBoard] = useState<Board>(initialBoard);
 
-  const [selectedTile, setSelectedTile] = useState<Tile | null>();
   const [allowedMoves, setAllowedMoves] = useState<Move[]>([]);
-
-  const [isPromoting, setIsPromoting] = useState<boolean>(false);
 
   const selectTile = (tile: Tile): void => {
     if (selectedTile === tile) return setSelectedTile(null);
@@ -26,7 +38,13 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
   }
 
   const promotePawn = (side: Side) => {
-    setIsPromoting(true);
+    if (!selectedPromotionPiece) return;
+    const updatedBoard = board.map(tile => toKey(tile.position) === toKey(selectedPromotionPiece.position) ? selectedPromotionPiece : tile);
+
+    setBoard(updatedBoard);
+
+    setSelectedTile(null);
+    setTurn(turn === "white" ? "black" : "white");
   }
 
   const movePiece = (newTile: Tile, isCastlingMove: boolean): void => {
@@ -41,6 +59,8 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
     const pieceType = oldTile.piece!.type;
     const isOldTileLeftRook = oldTile.position.x.value === 1;
     const isNewTileLeftRook = newTile.position.x.value === 1;
+
+    const isPromotingPawn = selectedTile.piece?.type === "pawn" && (newTile.position.y.value === 1 || newTile.position.y.value === 8);
 
     const isEnPassantMove = !!(board.find(tile => tile.piece?.side !== oldTile.piece!.side && tile.position.x.value === newTile.position.x.value && tile.position.y.value === (side === "black" ? newTile.position.y.value + 1 : newTile.position.y.value - 1))?.piece?.canBeEnPassant);
 
@@ -61,12 +81,16 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
         if (oldTile.position.y.value - newTile.position.y.value === 2) updatedTile.piece.canBeEnPassant = true;
         else updatedTile.piece.canBeEnPassant = false;
 
-        if (newTile.position.y.value === 1) updatedTile.piece = { type: "queen", side: "black", imageUrl: "/pieces/queen/black.svg", hasEverMoved: true };
+        if (newTile.position.y.value === 1) {
+          setIsPromoting(true);
+        }
       } else {
         if (newTile.position.y.value - oldTile.position.y.value === 2) updatedTile.piece.canBeEnPassant = true;
         else updatedTile.piece.canBeEnPassant = false;
 
-        if (newTile.position.y.value === 8) updatedTile.piece = { type: "queen", side: "white", imageUrl: "/pieces/queen/white.svg", hasEverMoved: true };
+        if (newTile.position.y.value === 8) {
+          setIsPromoting(true);
+        }
       }
     }
 
@@ -118,8 +142,12 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
       setBoard(updatedBoardFinal);
     }
 
-    setSelectedTile(null);
-    setTurn(turn === "white" ? "black" : "white");
+    console.log("Is promoting: ", isPromoting);
+
+    if (!isPromotingPawn) {
+      setSelectedTile(null);
+      setTurn(turn === "white" ? "black" : "white");
+    }
   }
 
   const onTileClick = (tile: Tile): void => {
@@ -147,11 +175,18 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
     console.log("Lost pieces: ", lostPieces);
   }, [lostPieces]);
 
+  useEffect(() => {
+    if (selectedPromotionPiece) promotePawn(turn);
+  }, [selectedPromotionPiece]);
+
   return (
     <div className={"grid grid-cols-8 w-fit overflow-hidden"}>
       {board.map((tile: Tile, index: number) => {
         const isBlackTile = (tile.position.x.value % 2 === 0 && tile.position.y.value % 2 === 0) || (tile.position.x.value % 2 !== 0 && tile.position.y.value % 2 !== 0);
         const piece = tile?.piece ?? null;
+
+        const isPromotingPawn = piece && piece.type === "pawn" && (tile.position.y.value === 1 || tile.position.y.value === 8);
+
         const isSelected = piece && selectedTile === tile;
 
         const allowedKeys = new Set(allowedMoves.map(toKey));
@@ -165,9 +200,9 @@ export default function BoardComponent({ turn, setTurn, lostPieces, setLostPiece
               flex items-center justify-center w-24 h-24 border border-foreground col-span-1 row-span-1
               ${isBlackTile && !isAllowedMove ? "bg-foreground text-background" : ""}
               ${isSelected ? 'border-green-500 shadow shadow-green-500' : ''}
-              ${selectedTile && isAllowedMove && !piece ? "bg-green-500" : ""}
-              ${selectedTile && isAllowedMove && piece && piece.side !== selectedTile.piece!.side ? "bg-red-500" : ""}
-              ${selectedTile && isAllowedMove && piece && piece.side === selectedTile.piece!.side ? "bg-orange-500" : ""}
+              ${selectedTile && !isPromotingPawn && isAllowedMove && !piece ? "bg-green-500" : ""}
+              ${selectedTile && !isPromotingPawn && isAllowedMove && piece && piece.side !== selectedTile.piece!.side ? "bg-red-500" : ""}
+              ${selectedTile && !isPromotingPawn && isAllowedMove && piece && piece.side === selectedTile.piece!.side ? "bg-orange-500" : ""}
             `}
           >
             {piece && (
