@@ -1,12 +1,12 @@
 import { Piece, Side } from "@/utils/Pieces";
-import { Position, Tile } from "@/utils/Board";
+import { Tile } from "@/utils/Board";
 import Image from "next/image";
 
 type PromoteProps = {
   side: Side;
   selectedTile: Tile | null;
   setIsPromoting: (value: boolean) => void;
-  setSelectedPromotionPiece: (value: { piece: Piece; position: Position; } | null) => void;
+  setSelectedPromotionPiece: (value: Piece | null) => void;
 }
 
 export default function PromoteComponent({ side, selectedTile, setIsPromoting, setSelectedPromotionPiece }: PromoteProps) {
@@ -21,7 +21,7 @@ export default function PromoteComponent({ side, selectedTile, setIsPromoting, s
     const position = selectedTile ? selectedTile.position : null;
     if (!position) return setSelectedPromotionPiece(null);
 
-    setSelectedPromotionPiece({ piece: piece, position: { ...position, y: { value: (side === "black" ? position.y.value - 1 : position.y.value + 1) } } });
+    setSelectedPromotionPiece(piece);
     setIsPromoting(false);
   }
 

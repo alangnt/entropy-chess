@@ -10,11 +10,13 @@ type BoardProps = {
   setTurn: (value: Side) => void;
   selectedTile: Tile | null;
   setSelectedTile: (value: Tile | null) => void;
+  selectedNewTile: Tile | null;
+  setSelectedNewTile: (value: Tile | null) => void;
   lostPieces: Piece[];
   setLostPieces: (value: Piece[]) => void;
   isPromoting: boolean;
   setIsPromoting: (value: boolean) => void;
-  selectedPromotionPiece: { piece: Piece; position: Position; } | null;
+  selectedPromotionPiece: Piece | null;
 }
 
 export default function BoardComponent({
@@ -22,6 +24,8 @@ export default function BoardComponent({
   setTurn,
   selectedTile,
   setSelectedTile,
+  selectedNewTile,
+  setSelectedNewTile,
   lostPieces,
   setLostPieces,
   isPromoting,
@@ -38,12 +42,16 @@ export default function BoardComponent({
   }
 
   const promotePawn = (side: Side) => {
-    if (!selectedPromotionPiece) return;
-    const updatedBoard = board.map(tile => toKey(tile.position) === toKey(selectedPromotionPiece.position) ? selectedPromotionPiece : tile);
+    if (!selectedPromotionPiece || !selectedNewTile) return;
+    const updatedBoard = board.map(tile => toKey(tile.position) === toKey(selectedNewTile.position) 
+      ? { position: selectedNewTile.position, piece: selectedPromotionPiece }
+      : tile
+    );
 
     setBoard(updatedBoard);
 
     setSelectedTile(null);
+    setSelectedNewTile(null);
     setTurn(turn === "white" ? "black" : "white");
   }
 
@@ -146,6 +154,7 @@ export default function BoardComponent({
 
     if (!isPromotingPawn) {
       setSelectedTile(null);
+      setSelectedNewTile(null);
       setTurn(turn === "white" ? "black" : "white");
     }
   }
@@ -172,8 +181,8 @@ export default function BoardComponent({
   }, [selectedTile]);
 
   useEffect(() => {
-    console.log("Lost pieces: ", lostPieces);
-  }, [lostPieces]);
+    if (selectedNewTile) onTileClick(selectedNewTile);
+  }, [selectedNewTile]);
 
   useEffect(() => {
     if (selectedPromotionPiece) promotePawn(turn);
@@ -195,14 +204,14 @@ export default function BoardComponent({
         return (
           <div
             key={index}
-            onClick={() => onTileClick(tile)}
+            onClick={() => setSelectedNewTile(tile)}
             className={`
               flex items-center justify-center w-24 h-24 border border-foreground col-span-1 row-span-1
               ${isBlackTile && !isAllowedMove ? "bg-foreground text-background" : ""}
               ${isSelected ? 'border-green-500 shadow shadow-green-500' : ''}
               ${selectedTile && !isPromotingPawn && isAllowedMove && !piece ? "bg-green-500" : ""}
-              ${selectedTile && !isPromotingPawn && isAllowedMove && piece && piece.side !== selectedTile.piece!.side ? "bg-red-500" : ""}
-              ${selectedTile && !isPromotingPawn && isAllowedMove && piece && piece.side === selectedTile.piece!.side ? "bg-orange-500" : ""}
+              ${selectedTile && !isPromotingPawn && isAllowedMove && piece && piece.side !== selectedTile.piece?.side ? "bg-red-500" : ""}
+              ${selectedTile && !isPromotingPawn && isAllowedMove && piece && piece.side === selectedTile.piece?.side ? "bg-orange-500" : ""}
             `}
           >
             {piece && (

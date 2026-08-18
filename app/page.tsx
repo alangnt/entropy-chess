@@ -4,15 +4,16 @@ import BoardComponent from "@/components/Board";
 import LostPiecesComponent from "@/components/LostPieces";
 import PromoteComponent from "@/components/Promote";
 import { Piece, Side } from "@/utils/Pieces";
-import { Position, Tile } from "@/utils/Board";
+import { Tile } from "@/utils/Board";
 import { useState } from "react";
 
 export default function App() {
   const [turn, setTurn] = useState<Side>("white");
   const [selectedTile, setSelectedTile] = useState<Tile | null>(null);
+  const [selectedNewTile, setSelectedNewTile] = useState<Tile | null>(null);
   const [lostPieces, setLostPieces] = useState<Piece[]>([]);
   const [isPromoting, setIsPromoting] = useState<boolean>(false);
-  const [selectedPromotionPiece, setSelectedPromotionPiece] = useState<{ piece: Piece; position: Position; } | null>(null);
+  const [selectedPromotionPiece, setSelectedPromotionPiece] = useState<Piece | null>(null);
 
   return (
     <div className="relative">
@@ -25,6 +26,8 @@ export default function App() {
             setTurn={setTurn}
             selectedTile={selectedTile}
             setSelectedTile={setSelectedTile}
+            selectedNewTile={selectedNewTile}
+            setSelectedNewTile={setSelectedNewTile}
             lostPieces={lostPieces}
             setLostPieces={setLostPieces}
             isPromoting={isPromoting}
