@@ -1,4 +1,4 @@
-import { Board, initialBoard, Move, Position, Tile } from "@/utils/Board";
+import { Board, initialBoard, Move, Tile } from "@/utils/Board";
 import { calculateAllowedMoves } from "@/utils/calculateAllowedMoves";
 import { Piece, Side } from "@/utils/Pieces";
 import { toKey } from "@/utils/positionToKey";
